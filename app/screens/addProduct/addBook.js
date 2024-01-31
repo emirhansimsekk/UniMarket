@@ -1,0 +1,218 @@
+import { View, Text, StyleSheet, Button,ToastAndroid, TextInput,TouchableOpacity, Image, Alert, TouchableOpacityComponent } from 'react-native'
+import React from 'react'
+import { useFonts } from 'expo-font';
+import axios from 'axios';
+import { useState } from 'react'
+import { useUser } from '@clerk/clerk-expo';
+import { fonts } from '../../../assets/theme';
+import * as ImagePicker from 'expo-image-picker';
+import {  uploadToFirebase } from '../../../firebase-config';
+
+
+const addBook = () => {
+
+
+  
+const { user } = useUser();
+const [txt_baslik,setBaslik] = useState('');
+const [txt_yazarAdi,setYazarAdi] = useState('');
+const [txt_aciklama,setAciklama] = useState('');
+const [txt_fiyat,setFiyat] = useState('');
+const [image_url,setImageUrl] = useState('')
+
+  const ekle = () => {
+    var book = {
+      title: txt_baslik, 
+      category_id: 1,      
+      description: txt_aciklama,                 
+      price: txt_fiyat,
+      image_url : image_url,
+      user_id: user.id,
+    
+    }
+    console.log(image_url)
+    axios.post('http://192.168.1.114:8000/products',book)
+    .then((response) => {
+      console.log(response);
+
+    });   
+  };
+  const foto = async () =>{
+    //await ensureDirExists();
+    let result = await ImagePicker.launchCameraAsync({
+      ediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 0.5,
+    })
+    const image = result.assets[0]
+    const fileName = new Date().getTime() + '.jpeg';
+    console.log('uri'+image.uri)
+    console.log('filename'+fileName)
+    const uploadImage = await uploadToFirebase(image.uri,fileName,"v")
+    console.log('uri'+image.uri)
+    console.log('filename'+fileName)
+    console.log('url '+uploadImage.downloadUrl)
+    setImageUrl(uploadImage.downloadUrl)
+    
+  }
+  const chatGPT = () =>{
+    console.log('chatgpt')
+          if(txt_baslik===''){
+            console.log('Ilan basligini bos birakmayiniz !')
+            ToastAndroid.show('Ilan basligini bos birakmayiniz !', ToastAndroid.LONG);
+          
+            }
+            else{
+              console.log('chatgpt')
+  
+            axios.get('http://192.168.1.114:5000/endpoint/'+txt_baslik)
+            .then((response) => {
+              const data = JSON.parse(response.data.data); // İlan açıklamasını çıkarmak için JSON.parse kullanabilirsiniz
+              const aciklama = data.ilan_aciklamasi;
+              setAciklama(aciklama)
+              console.log(txt_baslik);
+              console.log(aciklama);
+  
+            }).catch(error => {
+              console.error('GET isteği sırasında bir hata oluştu:', error);
+            });
+            }
+  }
+  const yardimAl = () => {
+    
+    Alert.alert('Yardim Al', 'Bu ozellik sayesinde girdiginiz ilan basligina gore yapay zeka bir aciklama olusturur. Bunun icin once ilan basligi girmeniz gerekmektedir.', [
+      {
+        text: 'Vazgec',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      },
+      {text: 'Yardim Al', onPress: () => {chatGPT();}},
+    ]);
+    
+    
+  };
+
+  return (
+    <View>
+    
+    
+      
+    <View style={styles.container}>
+    
+      <TextInput
+        style={styles.textInputStyle}
+        placeholder=" Kitap Adı"
+        placeholderTextColor="#000"
+        onChangeText={(text) => setBaslik(text)}
+        //value={txt_baslik}
+        />
+      <TextInput
+        style={styles.textInputStyle}
+        placeholder=" Yazar Adı"
+        placeholderTextColor="#000"
+        onChangeText={(text) => setYazarAdi(text)}/>
+        <TextInput
+        multiline={true}
+        style={styles.textInputDescStyle}
+        placeholder=" Açıklama"
+        value={txt_aciklama}
+        placeholderTextColor="#000"
+        onChangeText={(text) => setAciklama(text)}
+        />
+
+        <TouchableOpacity onPress={yardimAl}>
+          <Text>Yardim al</Text>
+        </TouchableOpacity>
+
+        <TextInput
+        style={styles.textInputStyle}
+        placeholder=" Fiyat"
+        placeholderTextColor="#000"
+        keyboardType='numeric'
+        onChangeText={(text) => setFiyat(text)}
+        />
+        <View style={styles.button}>
+      <Button
+        
+        title='Ekle' onPress={ekle}
+      /> 
+       <Button
+        
+        title='foto' onPress={foto}
+      /> 
+
+
+    </View>
+      
+    </View>
+    
+    </View>
+  )
+}
+const styles = StyleSheet.create({
+    container: {
+         
+        fontSize: 25,
+        color: '#3AB4BA',
+        alignItems: 'flex-start',
+        
+        marginTop: 80,
+        marginLeft:30
+    },
+    textHeaderStyle:{
+     
+      fontSize:25,
+      marginLeft:0,
+      marginTop:50,
+      color:'white',
+      alignSelf:'center'
+      
+    },
+    textInputStyle:{
+      
+      borderColor: '#000',
+      borderWidth: 2,
+      borderRadius: 8,
+      borderColor: '#8F8F8F',
+      width: '90%',
+      height: 40,
+      fontSize: 20,
+      opacity: 1,
+      marginTop: 20,
+      
+      paddingHorizontal:10
+    },
+    textInputDescStyle:{
+      
+      borderColor: '#000',
+      borderWidth: 2,
+      borderRadius: 8,
+      borderColor: '#8F8F8F',
+      width: '90%',
+      height: 100,
+      fontSize: 20,
+      opacity: 1,
+      marginTop: 20,
+      
+      paddingHorizontal:10
+    },
+    image:{
+      position:'absolute',
+      width:220,
+      height:100,
+      marginLeft: 100,
+      marginTop:150
+      
+    },
+    button:{
+      color:'#004BFE',
+      marginTop:30,
+      alignSelf:'flex-end',
+      marginRight:60,
+      width:100,
+      height:100,
+    }
+
+})
+export default addBook
