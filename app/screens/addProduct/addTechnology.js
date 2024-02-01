@@ -13,7 +13,6 @@ const urun_tip = [
     { name: 'Klavye', link: './addKeyboard' },
   ];
 const teknolojiEkle = () => {
-
       
   return (
     <View>

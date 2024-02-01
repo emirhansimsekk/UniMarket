@@ -4,7 +4,7 @@ import axios from 'axios'
 import { FlatList } from 'react-native-gesture-handler';
 import { useFonts } from 'expo-font';
 import { Link } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 import { fonts } from '../../../assets/theme';
 
 const MAX_TEXT_LENGTH = 15; 
@@ -14,6 +14,11 @@ const kisaText = (text,length) => {
     return text.substring(0, length - 3) + '...';
   }
   return text;
+}
+const randomColor =() =>{
+  const color = Math.floor(Math.random()*16777215).toString(16).padStart(6,'0')
+
+  return `#${color}`;
 }
 
 const sporIlanlari = () => {
@@ -49,11 +54,24 @@ const sporIlanlari = () => {
                 params: { product_id : product_id }
               }} asChild>
               <TouchableOpacity style={{marginLeft:10}}>
-                <Image source={{ uri: thumbnail}} style={styles.iconStyle} />
-                <Text style={styles.textStylePrice}>{price} TL</Text>
-                <Text style={styles.textStyleBookName}>{kisaText(title,20)}</Text> 
-                <Text style={styles.textStyleDescription}>{kisaText(description,55)}</Text>
+              <View style={{...styles.cardViewStyle,backgroundColor:randomColor()}}>
+                  <View style={{marginLeft:100,}}>
+                    <Text style={styles.textStylePrice}>₺{price}</Text>
+                    <Text style={styles.textStyleBookName}>{kisaText(title,20)}</Text> 
+                    <Text style={styles.textStyleDescription}>{kisaText(description,55)}</Text>
+                    <TouchableOpacity style={{alignSelf:'flex-end', padding:10}} onPress={() => deleteProduct(product_id)}>
+                      <MaterialIcons name="delete-outline" size={24} color="white" />
+                    </TouchableOpacity >
+                  </View>
+                 
+                 </View>
+
+
+              <View style={{position:'absolute'}}>
                 
+                  <Image source={{ uri: thumbnail}} style={styles.iconStyle} />
+                
+              </View>  
               </TouchableOpacity>
               
             </Link>
@@ -74,13 +92,26 @@ const styles = StyleSheet.create({
 
 container: {
   
-  width:420, 
+  width:'100%', 
   height: 250, 
-  backgroundColor: '#fff', 
-  borderWidth:0, 
-  margin: 0, 
-  borderRadius: 0,
   
+},
+cardViewStyle:{
+  marginTop:50,
+  borderRadius:30, 
+
+  height:'80%', 
+  width:'90%',
+  alignSelf:'flex-end',
+  marginRight:4,
+  shadowColor:'black',
+  shadowOffset: {
+    width:10,
+    height: 100
+  },
+  shadowOpacity: 2,
+  shadowRadius: 0,
+  elevation: 20
 },
 textHeaderStyle:{
   

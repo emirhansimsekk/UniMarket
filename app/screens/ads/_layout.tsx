@@ -60,6 +60,13 @@ const AdsLayout = () => {
           headerTitleAlign: 'center',
           headerLeft: () => <LogoutButton />
         }}></Stack.Screen>    
+      <Stack.Screen
+        name="myAds"
+        options={{
+          headerTitle: 'Ilanlarim',
+          headerTitleAlign: 'center',
+          headerLeft: () => <LogoutButton />
+        }}></Stack.Screen>    
           
     </Stack>
   );

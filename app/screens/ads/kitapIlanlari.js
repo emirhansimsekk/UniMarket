@@ -16,6 +16,12 @@ const kisaText = (text,length) => {
   return text;
 }
 
+const randomColor =() =>{
+  const color = Math.floor(Math.random()*16777215).toString(16).padStart(6,'0')
+
+  return `#${color}`;
+}
+
 const kitapIlanlari = () => {
     const [book, setBook] = useState([]);
     const fetchData = () => {
@@ -53,15 +59,26 @@ const kitapIlanlari = () => {
                 params: { product_id : product_id }
               }} asChild>
               <TouchableOpacity style={{marginLeft:10}}>
-                <Image source={{ uri: image}} style={styles.iconStyle} />
-                <Text style={styles.textStylePrice}>{price} TL</Text>
-                <Text style={styles.textStyleBookName}>{kisaText(title,20)}</Text> 
-                <Text style={styles.textStyleDescription}>{kisaText(description,100)}</Text>
+              <View style={{...styles.cardViewStyle,backgroundColor:randomColor()}}>
+                  <View style={{marginLeft:100}}>
+                    <Text style={styles.textStylePrice}>₺{price}</Text>
+                    <Text style={styles.textStyleBookName}>{kisaText(title,20)}</Text> 
+                    <Text style={styles.textStyleDescription}>{kisaText(description,55)}</Text>
+
+                  </View>
+                 
+                 </View>
+
+
+              <View style={{position:'absolute'}}>
+                
+                  <Image source={{ uri: image}} style={styles.iconStyle} />
+                
+              </View>  
                 
               </TouchableOpacity>
               
             </Link>
-            <View style={{borderWidth:0.25}}></View>
             
             
           </View>
@@ -76,53 +93,81 @@ const kitapIlanlari = () => {
 }
 const styles = StyleSheet.create({
 
-container: {
+  container: {
   
-  width:420, 
-  height: 250, 
-  backgroundColor: '#fff', 
-  borderWidth:0, 
-  margin: 0, 
-  borderRadius: 0,
+    width:'100%', 
+    height: 250, 
+    
+    
+  },
+  cardViewStyle:{
+    marginTop:50,
+    borderRadius:30, 
   
-},
-textHeaderStyle:{
- 
-  fontSize:25,
-  marginLeft:0,
-  marginTop:20,
-  color:'white',
-  alignSelf:'center'
-  
-},
- textStyleBookName: {
-  marginTop: 10,
-  marginLeft:130,
-  fontSize: 20,
-  position:'absolute',
-  
- },
- textStyleDescription: {
-  marginTop:40,
-  marginLeft:125,
-  fontSize: 20,
-  position:'absolute',
-  
- },
- textStylePrice: {
-  marginTop:150,
-  marginLeft:130,
-  fontSize:25,
-  position:'absolute',
-
- },
- iconStyle:{
-  position:'absolute',
-  width:120,
-  height:120,
-  marginTop:30
-  
- }
+    height:'80%', 
+    width:'90%',
+    alignSelf:'flex-end',
+    marginRight:4,
+    shadowColor:'black',
+    shadowOffset: {
+      width:10,
+      height: 1000
+    },
+    shadowOpacity: 2,
+    shadowRadius: 0,
+    elevation: 1
+  },
+  textHeaderStyle:{
+    
+    fontSize:25,
+    marginLeft:0,
+    marginTop:20,
+    color:'white',
+    alignSelf:'center'
+    
+  },
+   textStyleBookName: {
+    marginTop: 10,
+    marginLeft:0,
+    fontSize: 20,
+    fontWeight:'bold',
+    position:'absolute',
+    color:'white'
+    
+   },
+   textStyleDescription: {
+    marginTop:60,
+    marginLeft:0,
+    fontSize: 20,
+    position:'absolute',
+    color:'white'
+    
+   },
+   textStylePrice: {
+    marginTop:150,
+    marginRight:25,
+    alignSelf:'flex-end',
+    fontSize:25,
+    position:'absolute',
+    color:'white',
+    fontWeight:'bold',
+    
+   },
+   iconStyle:{
+    position:'absolute',
+    width:120,
+    height:200,
+    marginTop:30,
+    borderRadius:25,
+    shadowColor:'black',
+    shadowOffset: {
+      width:10,
+      height: 1000
+    },
+    shadowOpacity: 2,
+    shadowRadius: 0,
+    elevation: 1
+   }
   
 
 
