@@ -2,7 +2,7 @@
 
 
 #
-*.firebase-config
+firebase-config
 
 # dependencies
 node_modules/
