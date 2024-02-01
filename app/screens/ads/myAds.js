@@ -24,7 +24,7 @@ const myAds = () => {
     const {user} = useUser();
     const [book, setBook] = useState([]);
     const fetchData = () => {
-        axios.get(`http://192.168.1.9:8000/products/user_id=${user.id}`)
+        axios.get(`http://192.168.1.114:8000/products/user_id=${user.id}`)
           .then((response) => {
             setBook(response.data.children);
             console.log(response.data.children)
@@ -42,14 +42,14 @@ const myAds = () => {
         console.log(product_id);
         
         Alert.alert(
-          'İlanınızı kaldırmak istediğinize emin misiniz?', 'My Alert Msg',
+          'İlanınızı kaldırmak istediğinize emin misiniz?', '',
           [
             {
               text: 'Vazgeç',
               onPress: () => console.log('Cancel Pressed'),
               style: 'cancel',
             },
-            { text: 'Evet', onPress: () => axios.delete(`http://192.168.1.9:8000/products/${product_id}`).then((response)=>{
+            { text: 'Evet', onPress: () => axios.delete(`http://192.168.1.114:8000/products/${product_id}`).then((response)=>{
               fetchData();
             }) },
           ]
@@ -73,7 +73,7 @@ const myAds = () => {
         const author = item.author || 'Yazar Bilgisi Yok';
         const price = item.price || 'Fiyat Bilgisi Yok';
         const description = item.description || 'Açıklama yok';
-        const thumbnail = "http://books.google.com/books/content?id=bnu5EAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        const thumbnail = item.image_url
         const product_id = item.product_id;
         return (
           <View key={item.id} style={styles.container}>
@@ -91,7 +91,7 @@ const myAds = () => {
               </TouchableOpacity>
               
             </Link>
-               <TouchableOpacity style={{justifyContent:'flex-end'}} onPress={() => deleteProduct(product_id)}>
+               <TouchableOpacity style={{alignSelf:'flex-end', marginRight:20}} onPress={() => deleteProduct(product_id)}>
                   <MaterialIcons name="delete-outline" size={48} color="red" />
               </TouchableOpacity >
             
@@ -122,7 +122,7 @@ container: {
   
 },
 textHeaderStyle:{
-  fontFamily:fonts.semiBold,
+  
   fontSize:25,
   marginLeft:0,
   marginTop:20,
@@ -135,21 +135,21 @@ textHeaderStyle:{
   marginLeft:130,
   fontSize: 20,
   position:'absolute',
-  fontFamily:fonts.semiBold
+  
  },
  textStyleDescription: {
   marginTop:40,
   marginLeft:130,
   fontSize: 20,
   position:'absolute',
-  fontFamily:fonts.extraLightItalic
+  
  },
  textStylePrice: {
   marginTop:150,
   marginLeft:130,
   fontSize:25,
   position:'absolute',
-  fontFamily:fonts.semiBold
+  
  },
  iconStyle:{
   position:'absolute',

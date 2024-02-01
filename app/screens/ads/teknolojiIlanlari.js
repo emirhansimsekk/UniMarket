@@ -19,7 +19,7 @@ const kisaText = (text,length) => {
 const teknolojiIlanlari = () => {
     const [book, setBook] = useState([]);
     const fetchData = () => {
-        axios.get('http://192.168.1.9:8000/technologies')
+        axios.get('http://192.168.1.114:8000/technologies')
           .then((response) => {
             setBook(response.data.children);
             console.log(response.data.children)
@@ -43,7 +43,7 @@ const teknolojiIlanlari = () => {
         const title = item.title || 'Başlık Yok';
         const price = item.price || 'Fiyat Bilgisi Yok';
         const description = item.description || 'Açıklama yok';
-        const thumbnail = "http://books.google.com/books/content?id=bnu5EAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        const thumbnail = item.image_url
         const product_id = item.product_id;
         return (
           <View key={item.id} style={styles.container}>
@@ -87,7 +87,7 @@ container: {
   
 },
 textHeaderStyle:{
-  fontFamily:fonts.semiBold,
+  
   fontSize:25,
   marginLeft:0,
   marginTop:0,
@@ -100,21 +100,21 @@ textHeaderStyle:{
   marginLeft:130,
   fontSize: 20,
   position:'absolute',
-  fontFamily:fonts.semiBold
+  
  },
  textStyleDescription: {
   marginTop:40,
   marginLeft:130,
   fontSize: 20,
   position:'absolute',
-  fontFamily:fonts.extraLightItalic
+  
  },
  textStylePrice: {
   marginTop:150,
   marginLeft:130,
   fontSize:25,
   position:'absolute',
-  fontFamily:fonts.semiBold
+  
  },
  iconStyle:{
   position:'absolute',

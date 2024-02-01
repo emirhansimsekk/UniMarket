@@ -17,7 +17,7 @@ const kisaText = (text,length) => {
     const params = useLocalSearchParams();
     const {product_id} = params;
     console.log(product_id)
-    const apiUrl = `http://192.168.1.9:8000/products/id=${product_id}`;
+    const apiUrl = `http://192.168.1.114:8000/products/id=${product_id}`;
     const [book, setBook] = useState([]);
     const fetchData = () => {
         axios.get(apiUrl)
@@ -54,7 +54,7 @@ const kisaText = (text,length) => {
     const title = item.title || 'Başlık Yok';
     const description = item.description || 'Açıklama Yok';
     const price = item.price || 'Fiyat Bilgisi Yok';
-    const thumbnail = "http://books.google.com/books/content?id=bnu5EAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    const thumbnail = item.image_url
 
     return (
     <View>
@@ -67,18 +67,18 @@ const kisaText = (text,length) => {
     <View style={{position:'absolute',width:400,backgroundColor:'white',height:525,marginTop:300,borderTopLeftRadius:50,borderTopRightRadius:50}}>
       <View style={{flexDirection:'row'}}>
           <View>
-              <Text style={{fontSize:30, padding:15,fontFamily:fonts.semiBold,position:'absolute',marginTop:10}}>{kisaText(title,20)}</Text>
-              <Text style={{fontSize:15, marginLeft:15,fontFamily:fonts.extraLightItalic,position:'absolute',marginTop:65}}> adres</Text>
-              <Text style={{fontSize:15, marginLeft:70,fontWeight:'300',fontFamily:fonts.extraLightItalic,position:'absolute',marginTop:65}}> numara</Text>
+              <Text style={{fontSize:30, padding:15,position:'absolute',marginTop:10}}>{kisaText(title,20)}</Text>
+              <Text style={{fontSize:15, marginLeft:15,position:'absolute',marginTop:65}}> adres</Text>
+              <Text style={{fontSize:15, marginLeft:70,fontWeight:'300',position:'absolute',marginTop:65}}> numara</Text>
               
           </View>
           <View>
-              <Text style={{color:'#000',padding:30,marginLeft:301, fontSize:20,fontFamily:fonts.mediumItalic}}>{price} TL</Text>
+              <Text style={{color:'#000',marginTop:80,marginLeft:301, fontSize:20}}>{price} TL</Text>
           </View>
       </View>
-      <Text style={{fontSize:20, marginLeft:25, fontWeight: '400',fontFamily:fonts.light,position:'absolute',marginTop:120}}>{kisaText(description,150)}</Text>
+      <Text style={{fontSize:20, marginLeft:25, fontWeight: '400',position:'absolute',marginTop:120}}>{kisaText(description,150)}</Text>
           
-      <Text style={{fontSize:30,fontFamily:fonts.semiBold,marginLeft:20,position:'absolute',marginTop:270}}>İlginizi Çekebilir</Text>
+      <Text style={{fontSize:30,marginLeft:20,position:'absolute',marginTop:270}}>İlginizi Çekebilir</Text>
         
       
     </View>

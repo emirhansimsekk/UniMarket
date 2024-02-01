@@ -19,7 +19,7 @@ const kisaText = (text,length) => {
 const sporIlanlari = () => {
     const [book, setBook] = useState([]);
     const fetchData = () => {
-        axios.get('http://192.168.1.108:8000/sports')
+        axios.get('http://192.168.1.114:8000/sports')
           .then((response) => {
             setBook(response.data.children);
             console.log(response.data.children)
@@ -32,18 +32,7 @@ const sporIlanlari = () => {
 
   return (
     <View>
-      <View style={{width:410,height:70,backgroundColor:'#004BFE',position:'absolute',alignSelf:'flex-end',borderBottomEndRadius:20,borderBottomStartRadius:20}}>
-          <Text style={styles.textHeaderStyle}>Spor Ürünleri</Text>
-          </View>
-        
-          <Link href={{
-                    pathname: "../(auth)/home",
-                    
-                  }} asChild>
-          <TouchableOpacity>
-            <Ionicons name="chevron-back-outline" size={35} color="white" style={{marginLeft:10,marginTop:20}} />
-          </TouchableOpacity>
-        </Link> 
+
       <ScrollView  horizontal= {false} style={{marginTop:40}}>
      
       {book.map(item => {
@@ -94,7 +83,7 @@ container: {
   
 },
 textHeaderStyle:{
-  fontFamily:fonts.semiBold,
+  
   fontSize:25,
   marginLeft:0,
   marginTop:20,
@@ -107,21 +96,21 @@ textHeaderStyle:{
   marginLeft:130,
   fontSize: 20,
   position:'absolute',
-  fontFamily:fonts.semiBold
+  
  },
  textStyleDescription: {
   marginTop:40,
   marginLeft:130,
   fontSize: 20,
   position:'absolute',
-  fontFamily:fonts.extraLightItalic
+  
  },
  textStylePrice: {
   marginTop:150,
   marginLeft:130,
   fontSize:25,
   position:'absolute',
-  fontFamily:fonts.semiBold
+  
  },
  iconStyle:{
   position:'absolute',

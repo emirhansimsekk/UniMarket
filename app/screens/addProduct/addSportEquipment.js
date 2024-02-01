@@ -26,6 +26,7 @@ const [txt_ekipmanDurumu,setEkipmanDurumu] = useState('');
 const [txt_baslik,setBaslik] = useState('');
 const [txt_aciklama,setAciklama] = useState('');
 const [txt_fiyat,setFiyat] = useState('');
+const [txt_imageUrl,setImageUrl] = useState('');
 
 
 const brans = [
@@ -47,19 +48,70 @@ const ekle = () => {
     title: txt_baslik,   
     category_id: 3,  
     description: txt_aciklama,                 
-    price: txt_fiyat
+    price: txt_fiyat,
+    image_url: txt_imageUrl,
+    user_id: user.id,
   }
   axios.post('http://192.168.1.108:8000/products',equipment)
   .then((response) => {
     console.log(response);
  });
 
-  /*if((/\d/.test(txt_yazarAdi))){
-    Alert.alert('Uyarı', "yazar ismi sadece karakterlerden oluşmalı");
-  }
-  if(!(/\d/.test(txt_fiyat))){
-    Alert.alert(s'Uyarı', "yazar ismi sadece karakterlerden oluşmalı");
-  }*/
+ const foto = async () =>{
+  //await ensureDirExists();
+  let result = await ImagePicker.launchCameraAsync({
+    ediaTypes: ImagePicker.MediaTypeOptions.Images,
+    allowsEditing: true,
+    aspect: [4, 3],
+    quality: 0.5,
+  })
+  const image = result.assets[0]
+  const fileName = new Date().getTime() + '.jpeg';
+  console.log('uri'+image.uri)
+  console.log('filename'+fileName)
+  const uploadImage = await uploadToFirebase(image.uri,fileName,"v")
+  console.log('uri'+image.uri)
+  console.log('filename'+fileName)
+  console.log('url '+uploadImage.downloadUrl)
+  setImageUrl(uploadImage.downloadUrl)
+  
+}
+const chatGPT = () =>{
+  console.log('chatgpt')
+        if(txt_baslik===''){
+          console.log('Ilan basligini bos birakmayiniz !')
+          ToastAndroid.show('Ilan basligini bos birakmayiniz !', ToastAndroid.LONG);
+        
+          }
+          else{
+            console.log('chatgpt')
+
+          axios.get('http://192.168.1.114:5000/endpoint/'+txt_baslik)
+          .then((response) => {
+            const data = JSON.parse(response.data.data); // İlan açıklamasını çıkarmak için JSON.parse kullanabilirsiniz
+            const aciklama = data.ilan_aciklamasi;
+            setAciklama(aciklama)
+            console.log(txt_baslik);
+            console.log(aciklama);
+
+          }).catch(error => {
+            console.error('GET isteği sırasında bir hata oluştu:', error);
+          });
+          }
+}
+const yardimAl = () => {
+  
+  Alert.alert('Yardim Al', 'Bu ozellik sayesinde girdiginiz ilan basligina gore yapay zeka bir aciklama olusturur. Bunun icin once ilan basligi girmeniz gerekmektedir.', [
+    {
+      text: 'Vazgec',
+      onPress: () => console.log('Cancel Pressed'),
+      style: 'cancel',
+    },
+    {text: 'Yardim Al', onPress: () => {chatGPT();}},
+  ]);
+  
+  
+};
   
 };
 
@@ -125,11 +177,14 @@ const ekle = () => {
             onChangeText={(text) => setBaslik(text)}
             />
         <TextInput
-        style={styles.textInputStyle}
+        style={{height:100, ...styles.textInputStyle}}
         placeholder=" Açıklama"
         placeholderTextColor="#000"
         onChangeText={(text) => setAciklama(text)}
         />
+        <TouchableOpacity onPress={yardimAl}>
+          <Text>Yardim al</Text>
+        </TouchableOpacity>
         <TextInput
         style={styles.textInputStyle}
         placeholder=" Fiyat"
@@ -143,7 +198,10 @@ const ekle = () => {
         
         title='Ekle' onPress={ekle}
       /> 
-
+       <Button
+        
+        title='foto' onPress={foto}
+      /> 
 
     </View>
     </View>

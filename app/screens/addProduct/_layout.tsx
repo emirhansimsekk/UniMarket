@@ -1,6 +1,20 @@
 import React from 'react';
-import { Stack } from 'expo-router';
+import { Stack, router } from 'expo-router';
+import { TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
+export const LogoutButton = () => {
+
+  const goBack = () => {
+    router.replace('/(auth)/ilanVer')
+  };
+
+  return (
+    <TouchableOpacity onPress={goBack}>
+      <Ionicons name="chevron-back-outline" size={35} color="white" ></Ionicons>
+    </TouchableOpacity>
+  );
+};
 const AdsLayout = () => {
   return (
     <Stack
@@ -16,6 +30,7 @@ const AdsLayout = () => {
         options={{
           headerTitle: 'Kitap Ekle',
           headerTitleAlign: 'center',
+          headerLeft: () => <LogoutButton />
         }}></Stack.Screen>
        
       <Stack.Screen
@@ -23,12 +38,15 @@ const AdsLayout = () => {
         options={{
           headerTitle: 'Teknoloji Ürünü Ekle',
           headerTitleAlign: 'center',
+          headerLeft: () => <LogoutButton />
         }}></Stack.Screen>
       <Stack.Screen
         name="addSportEquipment"
         options={{
           headerTitle: 'Spor Ekipmanı Ekle',
           headerTitleAlign: 'center',
+          headerLeft: () => <LogoutButton />
+          
         }}></Stack.Screen>
       
       <Stack.Screen
@@ -36,6 +54,7 @@ const AdsLayout = () => {
         options={{
           headerTitle: 'Giyim Ürünü Ekle',
           headerTitleAlign: 'center',
+          headerLeft: () => <LogoutButton />
         }}></Stack.Screen>    
           
     </Stack>

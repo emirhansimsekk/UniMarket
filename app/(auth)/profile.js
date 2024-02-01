@@ -15,7 +15,7 @@ const Profile = () => {
   const [book, setBook] = useState([]);
 
   const fetchData = () => {
-    axios.get(`http://192.168.1.9:8000/products/user_id=${user.id}`)
+    axios.get(`http://192.168.1.114:8000/products/user_id=${user.id}`)
       .then((response) => {
         setBook(response.data.children);
       })
@@ -82,12 +82,12 @@ const Profile = () => {
                 const author = item.author || 'Yazar Bilgisi Yok';
                 const price = item.price || 'Fiyat Bilgisi Yok';
                 const description = item.description || 'Açıklama yok';
-                const thumbnail = "http://books.google.com/books/content?id=bnu5EAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+                const thumbnail = item.image_url
                 const product_id = item.product_id;
                 return (
                 <View key={item.id}   >
                   <Link href={{
-                      pathname: "../screens/urunDetay",
+                      pathname: "../screens/ads/urunDetay",
                       params: { product_id : product_id }
                     }} asChild>
                     
@@ -111,41 +111,7 @@ const Profile = () => {
 
         </View>
         
-        <View style={{marginTop:20, marginLeft:20}}>
-        <Text style={{fontSize:25}}>Favorilerim</Text>
-        <ScrollView horizontal style={{marginTop:0}}>
-          {book.map(item => {
-          const title = item.title || 'Başlık Yok';
-          const author = item.author || 'Yazar Bilgisi Yok';
-          const price = item.price || 'Fiyat Bilgisi Yok';
-          const description = item.description || 'Açıklama yok';
-          const thumbnail = "http://books.google.com/books/content?id=bnu5EAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
-          const product_id = item.product_id;
-          return (
-          <View key={item.id}   >
-            <Link href={{
-                pathname: "../screens/urunDetay",
-                params: { product_id : product_id }
-              }} asChild>
-              
-              <TouchableOpacity style={styles.productButtonStyle}>
-               
-               <Image source={{ uri: thumbnail}} style={styles.image} />
-               <Text style={styles.textTitleStyle}>{kisaText(title,8)}</Text>
-               
-               <Text style={styles.textPriceStlye}>{price} TL</Text>
-              
-             </TouchableOpacity>
-      
        
-            </Link>
-            
-          </View>
-        )
-
-      })}
-          </ScrollView>
-        </View>
         </ScrollView>
         
         

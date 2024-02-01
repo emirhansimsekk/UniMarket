@@ -7,19 +7,16 @@ import { Ionicons } from '@expo/vector-icons';
 import { fonts } from '../../../assets/theme';
 
 const urun_tip = [
-    { name: 'Laptop', link: './laptopEkle' },
-    { name: 'Telefon', link: './telefonEkle' },
-    { name: 'Kulaklık', link: './kulaklikEkle' },
-    { name: 'Klavye', link: './klavyeEkle' },
+    { name: 'Laptop', link: './addLaptop' },
+    { name: 'Telefon', link: './addPhone' },
+    { name: 'Kulaklık', link: './addEarphone' },
+    { name: 'Klavye', link: './addKeyboard' },
   ];
 const teknolojiEkle = () => {
 
       
   return (
     <View>
-     
-
-
       <View style={{marginTop:70}}>
         <FlatList data={urun_tip}
                 keyExtractor={( item ) => item.id}
@@ -27,7 +24,7 @@ const teknolojiEkle = () => {
                     return (
                     <TouchableOpacity>
                         <Link href={item.link} style={{padding:15, borderBottomWidth:1}}>
-                            <Text style={{fontSize: 25,fontFamily:fonts.lightItalic}}>{item.name}</Text>
+                            <Text style={{fontSize: 25}}>{item.name}</Text>
                         </Link>
                         
                     </TouchableOpacity>                 
@@ -54,7 +51,7 @@ const styles = StyleSheet.create({
       marginLeft:30
   },
   textHeaderStyle:{
-    fontFamily:fonts.semiBold,
+    
     fontSize:25,
     marginLeft:0,
     marginTop:50,
@@ -73,7 +70,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     opacity: 1,
     marginTop: 20,
-    fontFamily:fonts.mediumItalic,
+    
     paddingHorizontal:10
   },
   image:{

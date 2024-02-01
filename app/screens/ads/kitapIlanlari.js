@@ -19,7 +19,7 @@ const kisaText = (text,length) => {
 const kitapIlanlari = () => {
     const [book, setBook] = useState([]);
     const fetchData = () => {
-        axios.get('http://192.168.1.9:8000/books')
+        axios.get('http://192.168.1.114:8000/books')
           .then((response) => {
             setBook(response.data.children);
             console.log(response.data.children)
@@ -56,7 +56,7 @@ const kitapIlanlari = () => {
                 <Image source={{ uri: image}} style={styles.iconStyle} />
                 <Text style={styles.textStylePrice}>{price} TL</Text>
                 <Text style={styles.textStyleBookName}>{kisaText(title,20)}</Text> 
-                <Text style={styles.textStyleDescription}>{kisaText(description,55)}</Text>
+                <Text style={styles.textStyleDescription}>{kisaText(description,100)}</Text>
                 
               </TouchableOpacity>
               
@@ -87,7 +87,7 @@ container: {
   
 },
 textHeaderStyle:{
-  fontFamily:fonts.semiBold,
+ 
   fontSize:25,
   marginLeft:0,
   marginTop:20,
@@ -100,21 +100,21 @@ textHeaderStyle:{
   marginLeft:130,
   fontSize: 20,
   position:'absolute',
-  fontFamily:fonts.semiBold
+  
  },
  textStyleDescription: {
   marginTop:40,
-  marginLeft:130,
+  marginLeft:125,
   fontSize: 20,
   position:'absolute',
-  fontFamily:fonts.extraLightItalic
+  
  },
  textStylePrice: {
   marginTop:150,
   marginLeft:130,
   fontSize:25,
   position:'absolute',
-  fontFamily:fonts.semiBold
+
  },
  iconStyle:{
   position:'absolute',
