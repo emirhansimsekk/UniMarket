@@ -11,8 +11,6 @@ import {  uploadToFirebase } from '../../../firebase-config';
 
 const addBook = () => {
 
-
-  
 const { user } = useUser();
 const [txt_baslik,setBaslik] = useState('');
 const [txt_yazarAdi,setYazarAdi] = useState('');
@@ -38,7 +36,6 @@ const [image_url,setImageUrl] = useState('')
     });   
   };
   const foto = async () =>{
-    //await ensureDirExists();
     let result = await ImagePicker.launchCameraAsync({
       ediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
