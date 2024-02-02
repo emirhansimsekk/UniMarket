@@ -1,0 +1,38 @@
+{
+  "name": "react-native-imaged-card-view",
+  "version": "0.0.11",
+  "description": "Rising Imaged Card View with Awesome Shadows and Fully Customizable Library for React Native",
+  "keywords": [
+    "image",
+    "card",
+    "view",
+    "imaged",
+    "rising",
+    "fully-customizable",
+    "customizable",
+    "FreakyCoder",
+    "freakycoder",
+    "kuray",
+    "Kuray",
+    "react",
+    "react-native",
+    "javascript",
+    "ui-lib",
+    "rn"
+  ],
+  "homepage": "https://www.freakycoder.com",
+  "bugs": "https://github.com/WrathChaos/react-native-imaged-card-view/issues",
+  "main": "./lib/src/ImagedCardView",
+  "repository": "git@github.com:WrathChaos/react-native-imaged-card-view.git",
+  "author": "Kuray (FreakyCoder) <kurayogun@gmail.com>",
+  "license": "MIT",
+  "peerDependencies": {
+    "react": ">= 16.8.6",
+    "react-native": ">= 0.60.5",
+    "react-native-androw": ">= 0.0.33",
+    "react-number-format": ">= 4.2.0",
+    "react-native-star-review": ">= 0.0.23",
+    "react-native-vector-icons": ">= 6.6.0",
+    "react-native-dynamic-vector-icons": ">= 0.2.1"
+  }
+}
