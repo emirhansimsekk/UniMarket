@@ -1,20 +1,59 @@
 import { View, Text, StyleSheet } from 'react-native'
-import React from 'react'
+import React, {useState,useEffect} from 'react'
+import axios from 'axios'
 import { useFonts } from 'expo-font';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { Ionicons } from '@expo/vector-icons';
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
 import { fonts } from '../../assets/theme';
 import Category from '../../components/Category';
 
+
 const IlanVer = () => {
 
-  return (
-    <View style = {{flex:1}}>
-      <Category name="Book">
+  const [category, setCategory] = useState([]);
+    const fetchData = () => {
+        axios.get('http://192.168.1.114:8000/categories')
+          .then((response) => {
+            setCategory(response.data.children);
+            console.log(response.data.children)
+          })
+          .catch((error) => {
+            console.error('Veri çekme hatası:', error);
+          });
+      };
+    
+      useEffect(() => {
+        fetchData(); 
+      }, []);
 
-      </Category>
-      
+const addBook = ()=>{
+  router.replace('../screens/addProduct/addBook')
+}
+
+  return (
+    <View style = {{flex:1,backgroundColor:'#DADBDA'}}>
+      <View>
+        <Text style={styles.textStyle}>Kategoriler</Text>
+      </View>
+
+      <ScrollView>
+        {category.map(item => {
+          return(
+           <View>
+            <TouchableOpacity onPress={addBook}>
+              <Category title={item.name} url={item.image_url}/>
+            </TouchableOpacity> 
+           </View> 
+
+          )
+        })}
+       
+        
+      </ScrollView>
+
+        
+
     </View>
     
   )

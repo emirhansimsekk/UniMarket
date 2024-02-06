@@ -55,6 +55,7 @@ const kitapIlanlari = () => {
           <View key={item.id} style={styles.container}>
             
             <Link href={{
+
                 pathname: "./urunDetay",
                 params: { product_id : product_id }
               }} asChild>
