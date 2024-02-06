@@ -27,21 +27,35 @@ const IlanVer = () => {
         fetchData(); 
       }, []);
 
-const addBook = ()=>{
-  router.replace('../screens/addProduct/addBook')
+const addScreen = (category_id)=>{
+  console.log(category_id)
+  if(category_id==1){
+    router.push("../screens/addProduct/addBook")
+  }
+  else if(category_id==2){
+    router.push("../screens/addProduct/addTechnology")
+  }
+  else if(category_id==3){
+    router.push("../screens/addProduct/addSportEquipment")
+  }
+  else if(category_id==4){
+    router.push("../screens/addProduct/addCloth")
+  }
+  
 }
 
   return (
-    <View style = {{flex:1,backgroundColor:'#DADBDA'}}>
+    <View style = {{flex:1,backgroundColor:'#F2F2F2'}}>
       <View>
         <Text style={styles.textStyle}>Kategoriler</Text>
       </View>
 
       <ScrollView>
         {category.map(item => {
+          category_id = item.category_id;
           return(
            <View>
-            <TouchableOpacity onPress={addBook}>
+            <TouchableOpacity onPress={() => addScreen(item.category_id)}>
               <Category title={item.name} url={item.image_url}/>
             </TouchableOpacity> 
            </View> 
@@ -67,7 +81,7 @@ const styles=StyleSheet.create({
       padding: 20,
       justifyContent: 'center',
       alignItems: 'center',
-      
+   
 
     },
     textHeaderStyle:{

@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Button,ToastAndroid, TextInput,TouchableOpacity, Image, Alert, TouchableOpacityComponent } from 'react-native'
+import { View,ActivityIndicator, Text, StyleSheet,Modal, Button,ToastAndroid, TextInput,TouchableOpacity, Image, Alert, TouchableOpacityComponent } from 'react-native'
 import React from 'react'
 import { useFonts } from 'expo-font';
 import axios from 'axios';
@@ -12,13 +12,14 @@ import {  uploadToFirebase } from '../../../firebase-config';
 const addBook = () => {
 
 const { user } = useUser();
-const [txt_baslik,setBaslik] = useState('');
+const [txt_baslik,setBaslik] = useState(false);
+const [isLoading,setLoading] = useState('');
 const [txt_yazarAdi,setYazarAdi] = useState('');
 const [txt_aciklama,setAciklama] = useState('');
 const [txt_fiyat,setFiyat] = useState('');
 const [image_url,setImageUrl] = useState('')
 
-  const ekle = () => {
+  const ekle = async() => {
     var book = {
       title: txt_baslik, 
       category_id: 1,      
@@ -29,11 +30,17 @@ const [image_url,setImageUrl] = useState('')
     
     }
     console.log(image_url)
-    axios.post('http://192.168.1.114:8000/products',book)
+    if(!image_url||!txt_aciklama||!txt_fiyat||!txt_yazarAdi||!txt_aciklama){
+      ToastAndroid.show('Hicbir alani bos birakmayiniz !', ToastAndroid.LONG);
+    }
+    else{
+     await axios.post('http://192.168.1.114:8000/products',book)
     .then((response) => {
       console.log(response);
 
-    });   
+    });  
+    }
+  
   };
   const foto = async () =>{
     let result = await ImagePicker.launchCameraAsync({
@@ -46,15 +53,21 @@ const [image_url,setImageUrl] = useState('')
     const fileName = new Date().getTime() + '.jpeg';
     console.log('uri'+image.uri)
     console.log('filename'+fileName)
-    const uploadImage = await uploadToFirebase(image.uri,fileName,"v")
-    console.log('uri'+image.uri)
-    console.log('filename'+fileName)
-    console.log('url '+uploadImage.downloadUrl)
-    setImageUrl(uploadImage.downloadUrl)
+    try{
+      const uploadImage = await uploadToFirebase(image.uri,fileName,"v")
+      console.log('uri'+image.uri)
+      console.log('filename'+fileName)
+      console.log('url '+uploadImage.downloadUrl)
+      setImageUrl(uploadImage.downloadUrl)
+    }
+    catch(e) {
+      ToastAndroid.show('Resim yuklenemedi !', ToastAndroid.LONG);
+    }
     
   }
-  const chatGPT = () =>{
+  const chatGPT = async() =>{
     console.log('chatgpt')
+    
           if(txt_baslik===''){
             console.log('Ilan basligini bos birakmayiniz !')
             ToastAndroid.show('Ilan basligini bos birakmayiniz !', ToastAndroid.LONG);
@@ -62,19 +75,23 @@ const [image_url,setImageUrl] = useState('')
             }
             else{
               console.log('chatgpt')
-  
-            axios.get('http://192.168.1.114:5000/endpoint/'+txt_baslik)
+            setLoading(true)
+            await axios.get('http://192.168.1.114:5000/endpoint/'+txt_baslik)
             .then((response) => {
               const data = JSON.parse(response.data.data); // İlan açıklamasını çıkarmak için JSON.parse kullanabilirsiniz
               const aciklama = data.ilan_aciklamasi;
               setAciklama(aciklama)
               console.log(txt_baslik);
               console.log(aciklama);
+              
   
             }).catch(error => {
               console.error('GET isteği sırasında bir hata oluştu:', error);
+            }).finally(() => {
+              setLoading(false)
             });
             }
+        
   }
   const yardimAl = () => {
     
@@ -92,11 +109,9 @@ const [image_url,setImageUrl] = useState('')
 
   return (
     <View>
-    
-    
-      
-    <View style={styles.container}>
-    
+     
+      <View style={styles.container}>
+        
       <TextInput
         style={styles.textInputStyle}
         placeholder=" Kitap Adı"
@@ -129,7 +144,7 @@ const [image_url,setImageUrl] = useState('')
         keyboardType='numeric'
         onChangeText={(text) => setFiyat(text)}
         />
-        <View style={styles.button}>
+    <View style={styles.button}>
       <Button
         
         title='Ekle' onPress={ekle}
@@ -138,9 +153,19 @@ const [image_url,setImageUrl] = useState('')
         
         title='foto' onPress={foto}
       /> 
-
-
     </View>
+    <Modal
+        animationType='fade'
+        transparent={true}
+        visible={isLoading}
+        onRequestClose={() => setIsLoading(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <ActivityIndicator size="large" color="#0000ff" />
+          </View>
+        </View>
+      </Modal>
       
     </View>
     
@@ -187,12 +212,12 @@ const styles = StyleSheet.create({
       borderRadius: 8,
       borderColor: '#8F8F8F',
       width: '90%',
-      height: 100,
+      height: 150,
       fontSize: 20,
       opacity: 1,
       marginTop: 20,
-      
-      paddingHorizontal:10
+      textAlignVertical:'top',
+      padding:10
     },
     image:{
       position:'absolute',
@@ -209,7 +234,19 @@ const styles = StyleSheet.create({
       marginRight:60,
       width:100,
       height:100,
-    }
+    },
+    modalContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)', // Arkaplan rengi ve şeffaflığı
+    },
+    modalContent: {
+      
+      padding: 20,
+      borderRadius: 10,
+      
+    },
 
 })
 export default addBook

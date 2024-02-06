@@ -1,13 +1,25 @@
 import { StyleSheet, Text, View,Image } from 'react-native'
 import React from 'react'
+import { useFonts } from 'expo-font'
 
 const Category = ({title,url}) => {
+  const [fontsLoaded] = useFonts({
+    'Poppins-Regular': require('../assets/fonts/Poppins-Regular.ttf'),
+    'Poppins-SemiBold': require('../assets/fonts/Poppins-SemiBold.ttf'),
+    'Poppins-MediumItalic': require('../assets/fonts/Poppins-MediumItalic.ttf'),
+    'Poppins-Light': require('../assets/fonts/Poppins-Light.ttf'),
+    'Poppins-LightItalic': require('../assets/fonts/Poppins-LightItalic.ttf'),
+    'Poppins-ExtraLightItalic': require('../assets/fonts/Poppins-ExtraLightItalic.ttf'),
+  });
+  if (!fontsLoaded) {
+    return null;
+  }
 
   return (
     <View style={styles.container}>
 
-      <View style={styles.imageViewStyle}><Image style={{width:100,height:100}} source={url ? {uri: url}} ></Image></View>
-      <View style={styles.textViewStyle} ><Text style={styles.textStyle}>{title}</Text></View>
+      <View style={styles.imageViewStyle}><Image style={{width:100,height:100}} source={{uri: url}} ></Image></View>
+      <View style={styles.textViewStyle} ><Text style={styles.textStyle}>{title.slice(0,1).toUpperCase() + title.slice(1, title.length)}</Text></View>
 
     </View>
   )
@@ -51,7 +63,8 @@ const styles = StyleSheet.create({
       
     },
     textStyle:{
-      fontSize:35
+      fontSize:35,
+      fontFamily:'Poppins-SemiBold'
     }
 
 })

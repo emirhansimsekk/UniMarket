@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, ScrollView,TouchableOpacity, Image } from 'reac
 import React, {useState, useEffect} from 'react';
 import { useUser } from '@clerk/clerk-expo';
 import { useFonts } from 'expo-font';
-import { Link } from 'expo-router';
+import { Link,router } from 'expo-router';
 import axios from 'axios'
 import { fonts } from '../../assets/theme';
 
@@ -23,7 +23,22 @@ const Home = () => {
   useEffect(() => {
     fetchData(); 
   }, []);
-
+  
+  const [category, setCategory] = useState([]);
+  const fetchDataCategory = () => {
+        axios.get('http://192.168.1.114:8000/categories')
+          .then((response) => {
+            setCategory(response.data.children);
+            console.log(response.data.children)
+          })
+          .catch((error) => {
+            console.error('Veri çekme hatası:', error);
+          });
+      };
+    
+      useEffect(() => {
+        fetchDataCategory(); 
+      }, []);
 
  
   const kisaText = (text,length) => {
@@ -32,7 +47,22 @@ const Home = () => {
     }
     return text;
   }
-
+  const showAds = (category_id)=>{
+    console.log(category_id)
+    if(category_id==1){
+      router.push("../screens/ads/kitapIlanlari")
+    }
+    else if(category_id==3){
+      router.push("../screens/ads/sporIlanlari")
+    }
+    else if(category_id==2){
+      router.push("../screens/ads/teknolojiIlanlari")
+    }
+    else if(category_id==4){
+      router.push("../screens/ads/kitapIlanlari")
+    }
+    
+  }
 
   
   return (
@@ -43,13 +73,20 @@ const Home = () => {
 
       <View>
         <View style={styles.containerButtons}>
-        
-        <Link href="../screens/ads/kitapIlanlari" style={styles.buttonStyle}> <Text style={styles.textStyle}>Kitap</Text> </Link>
-        <Link href="../screens/ads/teknolojiIlanlari" style={styles.buttonStyle}> <Text style={styles.textStyle}>{kisaText("Teknoloji",8)}</Text> </Link>
-        
-        
-          <Link href="../screens/ads/sporIlanlari" style={styles.buttonStyle}> <Text style={styles.textStyle}>Spor</Text> </Link>
-          <Link href="../screens/ads/giyimIlanlari" style={styles.buttonStyle}> <Text style={styles.textStyle}>Giyim</Text> </Link>
+          <ScrollView horizontal style={{marginTop:20}}>
+          {category.map(item => {
+            category_id = item.category_id;
+            return(
+            <View>
+              <TouchableOpacity style={styles.buttonStyle} onPress={() => showAds(item.category_id)}>
+                <Image style={{width:75,height:75}} source={{uri: item.image_url}} ></Image>
+                <Text style={{fontSize:16,textTransform:'uppercase', textAlign:'center'}}>{item.name}</Text>
+              </TouchableOpacity> 
+            </View> 
+
+            )
+          })} 
+          </ScrollView>
         </View>
       </View>
 
@@ -107,9 +144,9 @@ const styles = StyleSheet.create({
     position:'absolute',
     flexDirection: 'row',
     backgroundColor:'#D9D9D9',
-    marginLeft:10,
+    marginLeft:20,
     marginTop: 110,
-    height: 120,
+    height: 140,
     width: 375,
     position:'absolute',
     borderWidth: 0.5,
@@ -180,7 +217,7 @@ const styles = StyleSheet.create({
     alignSelf:'center',
     marginLeft:3,
     marginRight:10,
-    backgroundColor: '#4F80FF',
+    
     borderRadius: 25,
     textAlignVertical: 'center',
     textAlign: 'center',

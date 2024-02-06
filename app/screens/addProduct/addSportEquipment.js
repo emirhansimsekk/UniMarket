@@ -57,6 +57,9 @@ const ekle = () => {
     console.log(response);
  });
 
+  
+};
+
  const foto = async () =>{
   //await ensureDirExists();
   let result = await ImagePicker.launchCameraAsync({
@@ -112,9 +115,6 @@ const yardimAl = () => {
   
   
 };
-  
-};
-
   return (
     <View>
      
@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
         marginTop: 0, 
     },
     textHeaderStyle:{
-      fontFamily:fonts.semiBold,
+      
       fontSize:25,
       marginLeft:0,
       marginTop:50,
@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         paddingHorizontal: 10,
         marginTop:30,
-        fontFamily:fonts.semiBold
+        
         
       },
     textInputStyle:{
@@ -251,7 +251,7 @@ const styles = StyleSheet.create({
       marginTop: 30,
       paddingLeft:10,
       
-      fontFamily:fonts.mediumItalic
+      
     },
     image:{
       width:220,
@@ -270,11 +270,11 @@ const styles = StyleSheet.create({
     },
     placeholderStyle: {
         fontSize: 16,
-        fontFamily:fonts.mediumItalic
+        
       },
       selectedTextStyle: {
         fontSize: 16,
-        fontFamily:fonts.mediumItalic
+        
       },
       iconStyle: {
         width: 20,
@@ -283,7 +283,7 @@ const styles = StyleSheet.create({
       inputSearchStyle: {
         height: 40,
         fontSize: 16,
-        fontFamily:fonts.mediumItalic
+        
       },
 
 })
