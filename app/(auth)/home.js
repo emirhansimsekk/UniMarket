@@ -80,7 +80,7 @@ const Home = () => {
             <View>
               <TouchableOpacity style={styles.buttonStyle} onPress={() => showAds(item.category_id)}>
                 <Image style={{width:75,height:75}} source={{uri: item.image_url}} ></Image>
-                <Text style={{fontSize:16,textTransform:'uppercase', textAlign:'center'}}>{item.name}</Text>
+                <Text style={{fontSize:15,textTransform:'uppercase', textAlign:'center'}}>{item.name}</Text>
               </TouchableOpacity> 
             </View> 
 

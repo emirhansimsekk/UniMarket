@@ -1,13 +1,17 @@
-import { View, Text, FlatList,StyleSheet,TextInput,Button,Image } from 'react-native'
+import { View,Modal,Alert, Text,ActivityIndicator,ToastAndroid, FlatList,StyleSheet,TextInput,Button,Image } from 'react-native'
 import React,{ useState } from 'react'
 import { Dropdown } from 'react-native-element-dropdown';
 import { useFonts } from 'expo-font';
+import axios from 'axios';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Ionicons } from '@expo/vector-icons';
 import { Link } from 'expo-router';
-
+import * as ImagePicker from 'expo-image-picker';
+import { useUser } from '@clerk/clerk-expo';
 
 const addKeyboard = () => {
+    const { user } = useUser();
+    const [isLoading,setLoading] = useState('');
     const [txt_aciklama,setAciklama] = useState('');
     const [txt_fiyat,setFiyat] = useState('');
     const [txt_baslik,setBaslik] = useState('');
@@ -35,7 +39,7 @@ const addKeyboard = () => {
       ];
 
       const ekle = () => {
-        var book = {
+        var keyboard = {
           title: txt_baslik, 
           category_id: 2,      
           description: txt_aciklama,                 
@@ -44,30 +48,48 @@ const addKeyboard = () => {
           user_id: user.id,
         
         }
-        console.log(image_url)
-        axios.post('http://192.168.1.114:8000/products',book)
-        .then((response) => {
-          console.log(response);
-    
-        });   
+        if(!image_url||txt_aciklama==''||!txt_fiyat==''||!status==''){
+          ToastAndroid.show('Hicbir alani bos birakmayiniz !', ToastAndroid.LONG);
+        }
+        else{
+        try{
+          console.log(image_url)
+          axios.post('http://192.168.1.114:8000/products',keyboard)
+          .then((response) => {
+            console.log(response);
+            ToastAndroid.show('Urun Basariyla Eklendi', ToastAndroid.LONG);  
+
+        }); 
+        }
+        catch(e) {
+          ToastAndroid.show('Eklenemedi', ToastAndroid.LONG);
+        }
+  
+        }
+ 
       };
       const foto = async () =>{
         //await ensureDirExists();
         let result = await ImagePicker.launchCameraAsync({
           ediaTypes: ImagePicker.MediaTypeOptions.Images,
           allowsEditing: true,
-          aspect: [4, 3],
+          aspect: [16, 9],
           quality: 0.5,
         })
         const image = result.assets[0]
         const fileName = new Date().getTime() + '.jpeg';
         console.log('uri'+image.uri)
         console.log('filename'+fileName)
-        const uploadImage = await uploadToFirebase(image.uri,fileName,"v")
-        console.log('uri'+image.uri)
-        console.log('filename'+fileName)
-        console.log('url '+uploadImage.downloadUrl)
-        setImageUrl(uploadImage.downloadUrl)
+        try{
+          const uploadImage = await uploadToFirebase(image.uri,fileName,"v")
+          console.log('uri'+image.uri)
+          console.log('filename'+fileName)
+          console.log('url '+uploadImage.downloadUrl)
+          setImageUrl(uploadImage.downloadUrl)
+        }
+        catch(e) {
+          ToastAndroid.show('Resim yuklenemedi !', ToastAndroid.LONG);
+        }
         
       }
       const chatGPT = () =>{
@@ -79,8 +101,8 @@ const addKeyboard = () => {
                 }
                 else{
                   console.log('chatgpt')
-      
-                axios.get('http://192.168.1.114:5000/endpoint/'+txt_baslik)
+                  setLoading(true)
+                axios.get('http://192.168.1.114:5000/endpoint/'+txt_baslik+'.'+status)
                 .then((response) => {
                   const data = JSON.parse(response.data.data); // İlan açıklamasını çıkarmak için JSON.parse kullanabilirsiniz
                   const aciklama = data.ilan_aciklamasi;
@@ -90,6 +112,8 @@ const addKeyboard = () => {
       
                 }).catch(error => {
                   console.error('GET isteği sırasında bir hata oluştu:', error);
+                }).finally(() => {
+                  setLoading(false)
                 });
                 }
       }
@@ -185,6 +209,19 @@ const addKeyboard = () => {
           <Button title='Ekle' onPress={ekle}/>
           <Button title='foto' onPress={foto}/>  
       </View>
+      <Modal
+        animationType='fade'
+        transparent={true}
+        visible={isLoading}
+        onRequestClose={() => setIsLoading(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <ActivityIndicator size="large" color="#0000ff" />
+            <Text>Dusunuyor...</Text>
+          </View>
+        </View>
+      </Modal>
     </View>
     </View>
   )

@@ -1,20 +1,25 @@
-import { View, Text, StyleSheet, Button, TextInput, Image, Alert } from 'react-native'
+import { View,Modal,ActivityIndicator, Text,ToastAndroid,ActivityIndicator, StyleSheet, Button, TextInput, Image, Alert } from 'react-native'
 import React from 'react'
 import { Dropdown } from 'react-native-element-dropdown';
 import { Link, useNavigation } from "expo-router";
 import { useRouter } from "expo-router"
 import { useState } from 'react'
+import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
 import { Ionicons } from '@expo/vector-icons';
 import { useFonts } from 'expo-font';
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { fonts } from '../../../assets/theme';
+import { useUser } from '@clerk/clerk-expo';
 
 const addSportEquipment = () => {
 
  
-
+const { user } = useUser();
 const router = useRouter();
+
+const [isLoading,setLoading] = useState('');
+
 const [type, setType] = useState(null);
 const [isFocusType, setIsFocusType] = useState(false);
 
@@ -52,10 +57,17 @@ const ekle = () => {
     image_url: txt_imageUrl,
     user_id: user.id,
   }
-  axios.post('http://192.168.1.108:8000/products',equipment)
+  if(!image_url||!txt_aciklama||!txt_fiyat||!status){
+    ToastAndroid.show('Hicbir alani bos birakmayiniz !', ToastAndroid.LONG);
+  }
+  else{
+  console.log(image_url)
+  axios.post('http://192.168.1.114:8000/products',equipment)
   .then((response) => {
     console.log(response);
- });
+
+  });  
+  } 
 
   
 };
@@ -72,11 +84,16 @@ const ekle = () => {
   const fileName = new Date().getTime() + '.jpeg';
   console.log('uri'+image.uri)
   console.log('filename'+fileName)
-  const uploadImage = await uploadToFirebase(image.uri,fileName,"v")
-  console.log('uri'+image.uri)
-  console.log('filename'+fileName)
-  console.log('url '+uploadImage.downloadUrl)
-  setImageUrl(uploadImage.downloadUrl)
+  try{
+    const uploadImage = await uploadToFirebase(image.uri,fileName,"v")
+    console.log('uri'+image.uri)
+    console.log('filename'+fileName)
+    console.log('url '+uploadImage.downloadUrl)
+    setImageUrl(uploadImage.downloadUrl)
+  }
+  catch(e) {
+    ToastAndroid.show('Resim yuklenemedi !', ToastAndroid.LONG);
+  }
   
 }
 const chatGPT = () =>{
@@ -88,8 +105,8 @@ const chatGPT = () =>{
           }
           else{
             console.log('chatgpt')
-
-          axios.get('http://192.168.1.114:5000/endpoint/'+txt_baslik)
+            setLoading(true)
+          axios.get('http://192.168.1.114:5000/endpoint/'+txt_baslik+'.'+status)
           .then((response) => {
             const data = JSON.parse(response.data.data); // İlan açıklamasını çıkarmak için JSON.parse kullanabilirsiniz
             const aciklama = data.ilan_aciklamasi;
@@ -99,7 +116,9 @@ const chatGPT = () =>{
 
           }).catch(error => {
             console.error('GET isteği sırasında bir hata oluştu:', error);
-          });
+          }).finally(() => {
+            setLoading(false)
+          });;
           }
 }
 const yardimAl = () => {
@@ -118,9 +137,9 @@ const yardimAl = () => {
   return (
     <View>
      
-    <View style={{marginTop:80}}>
+    <View>
       
-      <View style={{marginTop:40}}>
+      <View style={styles.container}>
         <Dropdown
           style={[styles.dropdown, isFocusType && { borderColor: '#159C97'}]}
           placeholderStyle={styles.placeholderStyle}
@@ -143,6 +162,14 @@ const yardimAl = () => {
           }}
           
         />
+        <TextInput
+        style={styles.textInputStyle}
+        placeholder=" Ilan Basligi"
+        placeholderTextColor="#000"
+        onChangeText={(text) => setBaslik(text)}
+        //value={txt_baslik}
+        />
+
         <Dropdown
           style={[styles.dropdown, isFocusTypeStatus && { borderColor: '159C97'}]}
           placeholderStyle={styles.placeholderStyle}
@@ -165,26 +192,20 @@ const yardimAl = () => {
           }}
           
         />
-      </View>
-      
-    <View style={styles.container}>
-    
-      
-      <TextInput
-            style={styles.textInputStyle}
-            placeholder="İlan Başlığı"
-            placeholderTextColor="#000"
-            onChangeText={(text) => setBaslik(text)}
-            />
+
         <TextInput
-        style={{height:100, ...styles.textInputStyle}}
+        multiline={true}
+        style={styles.textInputDescStyle}
         placeholder=" Açıklama"
+        value={txt_aciklama}
         placeholderTextColor="#000"
         onChangeText={(text) => setAciklama(text)}
         />
-        <TouchableOpacity onPress={yardimAl}>
-          <Text>Yardim al</Text>
+
+      <TouchableOpacity onPress={yardimAl}>
+          <Image style={{width:25, height:25}} source={{uri:"https://firebasestorage.googleapis.com/v0/b/unimarket-764cb.appspot.com/o/icons8-chatgpt-24%20(1).png?alt=media&token=054973c8-39a0-43ac-8faa-e648d2d8dd89"}}></Image>
         </TouchableOpacity>
+
         <TextInput
         style={styles.textInputStyle}
         placeholder=" Fiyat"
@@ -192,8 +213,7 @@ const yardimAl = () => {
         keyboardType='numeric'
         onChangeText={(text) => setFiyat(text)}
         />
-        
-      <View style={styles.button}>
+    <View style={styles.button}>
       <Button
         
         title='Ekle' onPress={ekle}
@@ -204,87 +224,130 @@ const yardimAl = () => {
       /> 
 
     </View>
+    <Modal
+        animationType='fade'
+        transparent={true}
+        visible={isLoading}
+        onRequestClose={() => setIsLoading(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <ActivityIndicator size="large" color="#0000ff" />
+            <Text>Dusunuyor...</Text>
+          </View>
+        </View>
+      </Modal>
     </View>
     </View>
     </View>
   )
 }
 const styles = StyleSheet.create({
-    container: {
+  container: {
          
-        fontSize: 25,
-        color: '#3AB4BA',
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: 0, 
-    },
-    textHeaderStyle:{
-      
-      fontSize:25,
-      marginLeft:0,
-      marginTop:50,
-      color:'white',
-      alignSelf:'center'
-      
-    },
-    dropdown: {
-        height: 50,
-        width: 330,
-        marginLeft: 40,
-        borderColor: '#8F8F8F',
-        borderWidth: 2,
-        borderRadius: 8,
-        paddingHorizontal: 10,
-        marginTop:30,
-        
-        
-      },
-    textInputStyle:{
-      borderColor: '#000',
-      borderWidth: 2,
-      borderColor: '#8F8F8F',
-      borderRadius: 8,
-      width: '80%',
-      height: 50,
-      fontSize: 16,
-      opacity: 1,
-      marginTop: 30,
-      paddingLeft:10,
-      
-      
-    },
-    image:{
-      width:220,
-      height:100,
-      marginLeft: 100
-      
-    },
-    button:{
-      marginTop:40,
-      width:100,
-      height:100,
-    },
-    dropDownStlye:{
-        height: 40,
-        width: 220
-    },
-    placeholderStyle: {
-        fontSize: 16,
-        
-      },
-      selectedTextStyle: {
-        fontSize: 16,
-        
-      },
-      iconStyle: {
-        width: 20,
-        height: 20,
-      },
-      inputSearchStyle: {
-        height: 40,
-        fontSize: 16,
-        
-      },
-
+    fontSize: 25,
+    color: '#3AB4BA',
+    alignItems: 'flex-start',
+    
+    marginTop: 80,
+    marginLeft:30
+},
+textHeaderStyle:{
+ 
+  fontSize:25,
+  marginLeft:0,
+  marginTop:50,
+  color:'white',
+  alignSelf:'center'
+  
+},
+textInputStyle:{
+  
+  borderColor: '#000',
+  borderWidth: 2,
+  borderRadius: 8,
+  borderColor: '#8F8F8F',
+  width: '90%',
+  height: 40,
+  fontSize: 20,
+  opacity: 1,
+  marginTop: 20,
+  
+  paddingHorizontal:10
+},
+textInputDescStyle:{
+  
+  borderColor: '#000',
+  borderWidth: 2,
+  borderRadius: 8,
+  borderColor: '#8F8F8F',
+  width: '90%',
+  height: 150,
+  fontSize: 20,
+  opacity: 1,
+  marginTop: 20,
+  textAlignVertical:'top',
+  padding:10
+},
+image:{
+  position:'absolute',
+  width:220,
+  height:100,
+  marginLeft: 100,
+  marginTop:150
+  
+},
+button:{
+  color:'#004BFE',
+  marginTop:30,
+  alignSelf:'flex-end',
+  marginRight:60,
+  width:100,
+  height:100,
+},
+modalContainer: {
+  flex: 1,
+  justifyContent: 'center',
+  alignItems: 'center',
+  backgroundColor: 'rgba(0, 0, 0, 0.5)', // Arkaplan rengi ve şeffaflığı
+},
+modalContent: {
+  
+  padding: 20,
+  borderRadius: 10,
+  
+},
+dropDownStlye:{
+  height: 40,
+  width: 220
+},
+dropdown: {
+  height: 50,
+  width: 330,
+  borderColor: '#8F8F8F',
+  borderWidth: 2,
+  borderRadius: 8,
+  paddingHorizontal: 10,
+  marginTop:30,
+  
+  
+},
+placeholderStyle: {
+    fontSize: 20,
+    
+  },
+  selectedTextStyle: {
+    fontSize: 16,
+    
+  },
+  iconStyle: {
+    width: 20,
+    height: 20,
+  },
+  inputSearchStyle: {
+    height: 40,
+    fontSize: 16,
+    
+  },
 })
 export default addSportEquipment

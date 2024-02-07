@@ -1,6 +1,7 @@
-import { View,ActivityIndicator, Text, StyleSheet,Modal, Button,ToastAndroid, TextInput,TouchableOpacity, Image, Alert, TouchableOpacityComponent } from 'react-native'
+import { View,ActivityIndicator, Text, StyleSheet,Modal, Button,ToastAndroid, TextInput,TouchableOpacity, Image, Alert } from 'react-native'
 import React from 'react'
 import { useFonts } from 'expo-font';
+import { Dropdown } from 'react-native-element-dropdown';
 import axios from 'axios';
 import { useState } from 'react'
 import { useUser } from '@clerk/clerk-expo';
@@ -12,12 +13,23 @@ import {  uploadToFirebase } from '../../../firebase-config';
 const addBook = () => {
 
 const { user } = useUser();
+
+const [status, setStatus] = useState(null);
+const [isFocusTypeStatus, setIsFocusTypeStatus] = useState(false);
+
 const [txt_baslik,setBaslik] = useState(false);
 const [isLoading,setLoading] = useState('');
 const [txt_yazarAdi,setYazarAdi] = useState('');
 const [txt_aciklama,setAciklama] = useState('');
 const [txt_fiyat,setFiyat] = useState('');
 const [image_url,setImageUrl] = useState('')
+
+const durum = [
+  { label: 'Yıpranmış', value: 'Yıpranmış' },
+  { label: 'İyi', value: 'İyi' },
+  { label: 'Yeni Gibi', value: 'Yeni Gibi' },
+  { label: 'Yeni', value: 'Yeni' },
+];
 
   const ekle = async() => {
     var book = {
@@ -30,15 +42,17 @@ const [image_url,setImageUrl] = useState('')
     
     }
     console.log(image_url)
-    if(!image_url||!txt_aciklama||!txt_fiyat||!txt_yazarAdi||!txt_aciklama){
+    if(!image_url||!txt_aciklama||!txt_fiyat||!status){
       ToastAndroid.show('Hicbir alani bos birakmayiniz !', ToastAndroid.LONG);
     }
     else{
+     setLoading(true)
      await axios.post('http://192.168.1.114:8000/products',book)
     .then((response) => {
       console.log(response);
-
-    });  
+    }).finally(() => {
+      setLoading(false)
+    });
     }
   
   };
@@ -46,7 +60,7 @@ const [image_url,setImageUrl] = useState('')
     let result = await ImagePicker.launchCameraAsync({
       ediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [4, 3],
+      aspect: [16, 9],
       quality: 0.5,
     })
     const image = result.assets[0]
@@ -68,15 +82,15 @@ const [image_url,setImageUrl] = useState('')
   const chatGPT = async() =>{
     console.log('chatgpt')
     
-          if(txt_baslik===''){
+          if(txt_baslik == ''){
             console.log('Ilan basligini bos birakmayiniz !')
-            ToastAndroid.show('Ilan basligini bos birakmayiniz !', ToastAndroid.LONG);
-          
+            ToastAndroid.show("Ilan basligini bos birakmayiniz !", ToastAndroid.LONG);
+            
             }
             else{
               console.log('chatgpt')
             setLoading(true)
-            await axios.get('http://192.168.1.114:5000/endpoint/'+txt_baslik)
+            await axios.get('http://192.168.1.114:5000/endpoint/'+txt_baslik+'.'+status)
             .then((response) => {
               const data = JSON.parse(response.data.data); // İlan açıklamasını çıkarmak için JSON.parse kullanabilirsiniz
               const aciklama = data.ilan_aciklamasi;
@@ -114,16 +128,35 @@ const [image_url,setImageUrl] = useState('')
         
       <TextInput
         style={styles.textInputStyle}
-        placeholder=" Kitap Adı"
+        placeholder=" Ilan Basligi"
         placeholderTextColor="#000"
         onChangeText={(text) => setBaslik(text)}
         //value={txt_baslik}
         />
-      <TextInput
-        style={styles.textInputStyle}
-        placeholder=" Yazar Adı"
-        placeholderTextColor="#000"
-        onChangeText={(text) => setYazarAdi(text)}/>
+
+        <Dropdown
+          style={[styles.dropdown, isFocusTypeStatus && { borderColor: '159C97'}]}
+          placeholderStyle={styles.placeholderStyle}
+          selectedTextStyle={styles.selectedTextStyle}
+          inputSearchStyle={styles.inputSearchStyle}
+          iconStyle={styles.iconStyle}
+          data={durum}
+          search
+          maxHeight={300}
+          labelField="label"
+          valueField="value"
+          placeholder={!isFocusTypeStatus ? 'Durum' : '...'}
+          searchPlaceholder="Search..."
+          value={status}
+          onFocus={() => setIsFocusTypeStatus(true)}
+          onBlur={() => setIsFocusTypeStatus(false)}
+          onChange={item => {
+            setStatus(item.value);
+            setIsFocusTypeStatus(false);
+          }}
+          
+        />
+
         <TextInput
         multiline={true}
         style={styles.textInputDescStyle}
@@ -133,8 +166,8 @@ const [image_url,setImageUrl] = useState('')
         onChangeText={(text) => setAciklama(text)}
         />
 
-        <TouchableOpacity onPress={yardimAl}>
-          <Text>Yardim al</Text>
+      <TouchableOpacity onPress={yardimAl}>
+          <Image style={{width:25, height:25}} source={{uri:"https://firebasestorage.googleapis.com/v0/b/unimarket-764cb.appspot.com/o/icons8-chatgpt-24%20(1).png?alt=media&token=054973c8-39a0-43ac-8faa-e648d2d8dd89"}}></Image>
         </TouchableOpacity>
 
         <TextInput
@@ -163,6 +196,7 @@ const [image_url,setImageUrl] = useState('')
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <ActivityIndicator size="large" color="#0000ff" />
+            <Text>Dusunuyor...</Text>
           </View>
         </View>
       </Modal>
@@ -247,6 +281,38 @@ const styles = StyleSheet.create({
       borderRadius: 10,
       
     },
+    dropDownStlye:{
+      height: 40,
+      width: 220
+    },
+    dropdown: {
+      height: 50,
+      width: 330,
+      borderColor: '#8F8F8F',
+      borderWidth: 2,
+      borderRadius: 8,
+      paddingHorizontal: 10,
+      marginTop:30,
+      
+      
+    },
+    placeholderStyle: {
+        fontSize: 20,
+        
+      },
+      selectedTextStyle: {
+        fontSize: 16,
+        
+      },
+      iconStyle: {
+        width: 20,
+        height: 20,
+      },
+      inputSearchStyle: {
+        height: 40,
+        fontSize: 16,
+        
+      },
 
 })
 export default addBook
