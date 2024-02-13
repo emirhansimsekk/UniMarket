@@ -1,4 +1,4 @@
-import { View,Modal,ActivityIndicator, Text,Alert,ActivityIndicator, FlatList,ToastAndroid,StyleSheet,TextInput,Button,Image } from 'react-native'
+import { View,Modal, Text,Alert,ActivityIndicator, FlatList,ToastAndroid,StyleSheet,TextInput,Button,Image } from 'react-native'
 import React,{ useState } from 'react'
 import { Dropdown } from 'react-native-element-dropdown';
 import { useFonts } from 'expo-font';

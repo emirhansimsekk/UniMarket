@@ -18,11 +18,11 @@ const kisaText = (text,length) => {
     const {product_id} = params;
     console.log(product_id)
     const apiUrl = `http://192.168.1.114:8000/products/id=${product_id}`;
-    const [book, setBook] = useState([]);
+    const [book, setBook] = useState(null);
     const fetchData = () => {
         axios.get(apiUrl)
           .then((response) => {
-            setBook(response.data.children);
+            setBook(response.data.children[0]);
           })
           .catch((error) => {
             console.error('Veri çekme hatası:', error);
@@ -50,33 +50,27 @@ const kisaText = (text,length) => {
       
   return (
  <View>
-    {book.map(item=>{
-    const title = item.title || 'Başlık Yok';
-    const description = item.description || 'Açıklama Yok';
-    const price = item.price || 'Fiyat Bilgisi Yok';
-    const thumbnail = item.image_url
-
-    return (
+  {book && (
     <View>
         <View>
         <Image 
-            source={{uri:thumbnail}}
+            source={{uri:book.image_url}}
             style={{width:300, height: 400, borderBottomLeftRadius: 0,borderBottomRightRadius:0,alignSelf:'center'}}
         />
       </View>
     <View style={{position:'absolute',width:400,backgroundColor:'white',height:525,marginTop:300,borderTopLeftRadius:50,borderTopRightRadius:50}}>
       <View style={{flexDirection:'row'}}>
           <View>
-              <Text style={{fontSize:30, padding:15,position:'absolute',marginTop:10}}>{kisaText(title,20)}</Text>
+              <Text style={{fontSize:30, padding:15,position:'absolute',marginTop:10}}>{kisaText(book.title,20)}</Text>
               <Text style={{fontSize:15, marginLeft:15,position:'absolute',marginTop:65}}> adres</Text>
               <Text style={{fontSize:15, marginLeft:70,fontWeight:'300',position:'absolute',marginTop:65}}> numara</Text>
               
           </View>
           <View>
-              <Text style={{color:'#000',marginTop:80,marginLeft:301, fontSize:20}}>{price} TL</Text>
+              <Text style={{color:'#000',marginTop:80,marginLeft:301, fontSize:20}}>{book.price} TL</Text>
           </View>
       </View>
-      <Text style={{fontSize:20, marginLeft:25, fontWeight: '400',position:'absolute',marginTop:120}}>{kisaText(description,150)}</Text>
+      <Text style={{fontSize:20, marginLeft:25, fontWeight: '400',position:'absolute',marginTop:120}}>{kisaText(book.description,150)}</Text>
           
       <Text style={{fontSize:30,marginLeft:20,position:'absolute',marginTop:270}}>İlginizi Çekebilir</Text>
         
@@ -84,11 +78,8 @@ const kisaText = (text,length) => {
     </View>
     </View>    
     
-
-    )
-    })}
     
-    
+  )}
       
  </View>
   )

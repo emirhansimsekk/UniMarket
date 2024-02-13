@@ -1,4 +1,4 @@
-import { View,Modal,ActivityIndicator, Text,ActivityIndicator, FlatList,StyleSheet,ToastAndroid,TextInput,Button,Image,Alert } from 'react-native'
+import { View,Modal, Text,ActivityIndicator, FlatList,StyleSheet,ToastAndroid,TextInput,Button,Image,Alert } from 'react-native'
 import React,{ useState } from 'react'
 import { Dropdown } from 'react-native-element-dropdown';
 import { Link } from 'expo-router';
