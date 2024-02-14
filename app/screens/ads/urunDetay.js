@@ -1,10 +1,8 @@
-import { View, Text, Image, ScrollView, TouchableOpacity } from 'react-native'
+import { View, Text, Image} from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { Link } from 'expo-router';
-import { useFonts } from 'expo-font';
 import { useLocalSearchParams  } from 'expo-router';
 import axios from 'axios'
-import { fonts } from '../../../assets/theme';
+
 
 const kisaText = (text,length) => {
     if (text.length > length) {
