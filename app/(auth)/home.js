@@ -11,7 +11,7 @@ const Home = () => {
   const [book, setBook] = useState([]);
 
   const fetchData = () => {
-    axios.get('http://192.168.1.114:8000/products:sort=product_id:desc')
+    axios.get('http://192.168.1.11:8000/products:sort=product_id:desc')
       .then((response) => {
         setBook(response.data.children);
       })
@@ -26,7 +26,7 @@ const Home = () => {
   
   const [category, setCategory] = useState([]);
   const fetchDataCategory = () => {
-        axios.get('http://192.168.1.114:8000/categories')
+        axios.get('http://192.168.1.11:8000/categories')
           .then((response) => {
             setCategory(response.data.children);
             console.log(response.data.children)

@@ -15,7 +15,7 @@ const kisaText = (text,length) => {
     const params = useLocalSearchParams();
     const {product_id} = params;
     console.log(product_id)
-    const apiUrl = `http://192.168.1.114:8000/products/id=${product_id}`;
+    const apiUrl = `http://192.168.1.11:8000/products/id=${product_id}`;
     const [book, setBook] = useState(null);
     const fetchData = () => {
         axios.get(apiUrl)

@@ -52,7 +52,7 @@ const addPhone = () => {
         }
         else{
         console.log(image_url)
-        axios.post('http://192.168.1.114:8000/products',phone)
+        axios.post('http://192.168.1.11:8000/products',phone)
         .then((response) => {
           console.log(response);
     

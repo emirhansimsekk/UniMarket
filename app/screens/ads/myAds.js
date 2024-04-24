@@ -1,14 +1,10 @@
 import { View, Text,StyleSheet,ScrollView,Image, TouchableOpacity, Button,Alert  } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import { FlatList } from 'react-native-gesture-handler';
-import { useFonts } from 'expo-font';
 import { Link } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
 import { useUser } from '@clerk/clerk-expo';
 import { MaterialIcons } from '@expo/vector-icons';
-import { fonts } from '../../../assets/theme';
-import ImagedCardView from "react-native-imaged-card-view";
+import { LinearGradient } from 'expo-linear-gradient';
 
 const MAX_TEXT_LENGTH = 15; 
 
@@ -29,7 +25,7 @@ const myAds = () => {
     const {user} = useUser();
     const [book, setBook] = useState([]);
     const fetchData = () => {
-        axios.get(`http://192.168.1.114:8000/products/user_id=${user.id}`)
+        axios.get(`http://192.168.1.11:8000/products/user_id=${user.id}`)
           .then((response) => {
             setBook(response.data.children);
             console.log(response.data.children)
@@ -83,8 +79,8 @@ const myAds = () => {
               }} asChild>
 
             <TouchableOpacity style={{marginLeft:10}}>
-
-                <View style={{...styles.cardViewStyle,backgroundColor:randomColor()}}>
+                                                       
+                <LinearGradient colors={['#4F80FF', '#3FC8FF']} style={styles.cardViewStyle}>
                   <View style={{marginLeft:100,}}>
                     <Text style={styles.textStylePrice}>₺{price}</Text>
                     <Text style={styles.textStyleBookName}>{kisaText(title,20)}</Text> 
@@ -94,7 +90,7 @@ const myAds = () => {
                     </TouchableOpacity >
                   </View>
                  
-                 </View>
+                 </LinearGradient>
 
 
               <View style={{position:'absolute'}}>

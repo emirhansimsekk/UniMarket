@@ -25,7 +25,7 @@ const randomColor =() =>{
 const kitapIlanlari = () => {
     const [book, setBook] = useState([]);
     const fetchData = () => {
-        axios.get('http://192.168.1.114:8000/books')
+        axios.get('http://192.168.1.11:8000/books')
           .then((response) => {
             setBook(response.data.children);
             console.log(response.data.children)

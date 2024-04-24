@@ -15,7 +15,7 @@ const Profile = () => {
   const [book, setBook] = useState([]);
 
   const fetchData = () => {
-    axios.get(`http://192.168.1.114:8000/products/user_id=${user.id}`)
+    axios.get(`http://192.168.1.11:8000/products/user_id=${user.id}`)
       .then((response) => {
         setBook(response.data.children);
       })

@@ -13,7 +13,7 @@ const IlanVer = () => {
 
   const [category, setCategory] = useState([]);
     const fetchData = () => {
-        axios.get('http://192.168.1.114:8000/categories')
+        axios.get('http://192.168.1.11:8000/categories')
           .then((response) => {
             setCategory(response.data.children);
             console.log(response.data.children)
@@ -46,11 +46,9 @@ const addScreen = (category_id)=>{
 
   return (
     <View style = {{flex:1,backgroundColor:'#F2F2F2'}}>
-      <View>
-        <Text style={styles.textStyle}>Kategoriler</Text>
-      </View>
 
-      <ScrollView>
+
+      <ScrollView style ={{marginTop:20}}>
         {category.map(item => {
           category_id = item.category_id;
           return(

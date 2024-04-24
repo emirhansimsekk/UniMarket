@@ -53,7 +53,7 @@ const laptopEkle = () => {
         }
         else{
         console.log(image_url)
-        axios.post('http://192.168.1.114:8000/products',laptop)
+        axios.post('http://192.168.1.11:8000/products',laptop)
         .then((response) => {
           console.log(response);
     

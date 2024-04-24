@@ -62,7 +62,7 @@ const ekle = () => {
   }
   else{
   console.log(image_url)
-  axios.post('http://192.168.1.114:8000/products',equipment)
+  axios.post('http://192.168.1.11:8000/products',equipment)
   .then((response) => {
     console.log(response);
 

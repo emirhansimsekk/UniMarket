@@ -52,7 +52,7 @@ const addEarphone = () => {
         else{
         
         console.log(image_url)
-        axios.post('http://192.168.1.114:8000/products',earphone)
+        axios.post('http://192.168.1.11:8000/products',earphone)
         .then((response) => {
           console.log(response);
     

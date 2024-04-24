@@ -54,7 +54,7 @@ const addKeyboard = () => {
         else{
         try{
           console.log(image_url)
-          axios.post('http://192.168.1.114:8000/products',keyboard)
+          axios.post('http://192.168.1.11:8000/products',keyboard)
           .then((response) => {
             console.log(response);
             ToastAndroid.show('Urun Basariyla Eklendi', ToastAndroid.LONG);  

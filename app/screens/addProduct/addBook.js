@@ -47,7 +47,7 @@ const durum = [
     }
     else{
      setLoading(true)
-     await axios.post('http://192.168.1.114:8000/products',book)
+     await axios.post('http://192.168.1.11:8000/products',book)
     .then((response) => {
       console.log(response);
     }).finally(() => {
@@ -69,12 +69,13 @@ const durum = [
     console.log('filename'+fileName)
     try{
       const uploadImage = await uploadToFirebase(image.uri,fileName,"v")
-      console.log('uri'+image.uri)
+      //console.log('uri'+image.uri)
       console.log('filename'+fileName)
       console.log('url '+uploadImage.downloadUrl)
       setImageUrl(uploadImage.downloadUrl)
     }
     catch(e) {
+      console.log(e)
       ToastAndroid.show('Resim yuklenemedi !', ToastAndroid.LONG);
     }
     
@@ -191,7 +192,7 @@ const durum = [
         animationType='fade'
         transparent={true}
         visible={isLoading}
-        onRequestClose={() => setIsLoading(false)}
+        onRequestClose={() => setLoading(false)}
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
