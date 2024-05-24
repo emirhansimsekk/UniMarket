@@ -1,4 +1,4 @@
-import { Button, TextInput, View, StyleSheet } from 'react-native';
+import { Button, TextInput, View, StyleSheet, Text } from 'react-native';
 import { useSignUp } from '@clerk/clerk-expo';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { useState } from 'react';
@@ -9,6 +9,9 @@ const Register = () => {
 
   const [emailAddress, setEmailAddress] = useState('');
   const [password, setPassword] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [phone, setPhone] = useState('');
   const [pendingVerification, setPendingVerification] = useState(false);
   const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
@@ -18,6 +21,7 @@ const Register = () => {
     if (!isLoaded) {
       return;
     }
+    
     setLoading(true);
 
     try {
@@ -25,7 +29,11 @@ const Register = () => {
       await signUp.create({
         emailAddress,
         password,
+        firstName: firstName,
+        lastName: lastName,
+        phoneNumber: phone
       });
+      
 
       // Send verification Email
       await signUp.prepareEmailAddressVerification({ strategy: 'email_code' });
@@ -38,6 +46,7 @@ const Register = () => {
       setLoading(false);
     }
   };
+
 
   // Verify the email address
   const onPressVerify = async () => {
@@ -66,10 +75,14 @@ const Register = () => {
 
       {!pendingVerification && (
         <>
-          <TextInput autoCapitalize="none" placeholder="simon@galaxies.dev" value={emailAddress} onChangeText={setEmailAddress} style={styles.inputField} />
-          <TextInput placeholder="password" value={password} onChangeText={setPassword} secureTextEntry style={styles.inputField} />
+          <TextInput autoCapitalize="none" placeholder="Isim" value={firstName} onChangeText={(e)=>setFirstName(e)} style={styles.inputField} />
+          <TextInput placeholder="Soyisim" value={lastName} onChangeText={setLastName} style={styles.inputField} />
 
-          <Button onPress={onSignUpPress} title="Sign up" color={'#6c47ff'}></Button>
+          <TextInput autoCapitalize="none" placeholder="20120205046@ismu"  onChangeText={(e)=>setEmailAddress(e+".edu.tr")} style={styles.inputField} />
+          {!(emailAddress.length==0) && <Text>{emailAddress}</Text>}
+          <TextInput placeholder="Sifre" value={password} onChangeText={setPassword} secureTextEntry style={styles.inputField} />
+          <TextInput placeholder="Telefon" value={phone} onChangeText={setPhone} style={styles.inputField} />
+          <Button onPress={onSignUpPress} title="Sign up" color={'#4F80FF'}></Button>
         </>
       )}
 
@@ -78,7 +91,7 @@ const Register = () => {
           <View>
             <TextInput value={code} placeholder="Code..." style={styles.inputField} onChangeText={setCode} />
           </View>
-          <Button onPress={onPressVerify} title="Verify Email" color={'#6c47ff'}></Button>
+          <Button onPress={onPressVerify} title="Verify Email" color={'#4F80FF'}></Button>
         </>
       )}
     </View>

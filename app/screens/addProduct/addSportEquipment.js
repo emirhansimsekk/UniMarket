@@ -17,7 +17,7 @@ const addSportEquipment = () => {
  
 const { user } = useUser();
 const router = useRouter();
-
+const BASE_URL = "http://192.168.1.112:8000"
 const [isLoading,setLoading] = useState('');
 
 const [type, setType] = useState(null);
@@ -33,6 +33,7 @@ const [txt_aciklama,setAciklama] = useState('');
 const [txt_fiyat,setFiyat] = useState('');
 const [txt_imageUrl,setImageUrl] = useState('');
 
+const [isButtonEnable, setButtonEnable] = useState(false)
 
 const brans = [
     { label: 'Basketbol', value: 'Basketbol' },
@@ -62,7 +63,7 @@ const ekle = () => {
   }
   else{
   console.log(image_url)
-  axios.post('http://192.168.1.11:8000/products',equipment)
+  axios.post(`${BASE_URL}/products`,equipment)
   .then((response) => {
     console.log(response);
 
@@ -77,7 +78,6 @@ const ekle = () => {
   let result = await ImagePicker.launchCameraAsync({
     ediaTypes: ImagePicker.MediaTypeOptions.Images,
     allowsEditing: true,
-    aspect: [4, 3],
     quality: 0.5,
   })
   const image = result.assets[0]
@@ -90,6 +90,7 @@ const ekle = () => {
     console.log('filename'+fileName)
     console.log('url '+uploadImage.downloadUrl)
     setImageUrl(uploadImage.downloadUrl)
+    const [isButtonEnable, setButtonEnable] = useState(false)
   }
   catch(e) {
     ToastAndroid.show('Resim yuklenemedi !', ToastAndroid.LONG);
@@ -215,7 +216,7 @@ const yardimAl = () => {
         />
     <View style={styles.button}>
       <Button
-        
+        disabled={isButtonEnable}
         title='Ekle' onPress={ekle}
       /> 
        <Button

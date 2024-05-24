@@ -20,7 +20,8 @@ const addKeyboard = () => {
     const [status, setStatus] = useState(null);
     const [isFocusTypeStatus, setIsFocusTypeStatus] = useState(false);
     const [image_url,setImageUrl] = useState('')
-
+    const [isButtonEnable, setButtonEnable] = useState(false)
+    const BASE_URL = "http://192.168.1.112:8000"
     const urun_marka = [
         { label: 'Asus', value: 'Asus' },
         { label: 'Corsair', value: 'Corsair' },
@@ -54,7 +55,7 @@ const addKeyboard = () => {
         else{
         try{
           console.log(image_url)
-          axios.post('http://192.168.1.11:8000/products',keyboard)
+          axios.post(`${BASE_URL}/products`,keyboard)
           .then((response) => {
             console.log(response);
             ToastAndroid.show('Urun Basariyla Eklendi', ToastAndroid.LONG);  
@@ -73,7 +74,6 @@ const addKeyboard = () => {
         let result = await ImagePicker.launchCameraAsync({
           ediaTypes: ImagePicker.MediaTypeOptions.Images,
           allowsEditing: true,
-          aspect: [16, 9],
           quality: 0.5,
         })
         const image = result.assets[0]
@@ -86,6 +86,7 @@ const addKeyboard = () => {
           console.log('filename'+fileName)
           console.log('url '+uploadImage.downloadUrl)
           setImageUrl(uploadImage.downloadUrl)
+          setButtonEnable(true)
         }
         catch(e) {
           ToastAndroid.show('Resim yuklenemedi !', ToastAndroid.LONG);
@@ -102,7 +103,7 @@ const addKeyboard = () => {
                 else{
                   console.log('chatgpt')
                   setLoading(true)
-                axios.get('http://192.168.1.114:5000/endpoint/'+txt_baslik+'.'+status)
+                axios.get('http://192.168.1.112:5000/endpoint/'+txt_baslik+'.'+status)
                 .then((response) => {
                   const data = JSON.parse(response.data.data); // İlan açıklamasını çıkarmak için JSON.parse kullanabilirsiniz
                   const aciklama = data.ilan_aciklamasi;
@@ -206,7 +207,7 @@ const addKeyboard = () => {
           onChangeText={(text) => setFiyat(text)}
           />
           <View style={styles.button}>
-          <Button title='Ekle' onPress={ekle}/>
+          <Button disabled={!isButtonEnable} title='Ekle' onPress={ekle}/>
           <Button title='foto' onPress={foto}/>  
       </View>
       <Modal

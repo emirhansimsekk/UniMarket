@@ -12,20 +12,32 @@ const Profile = () => {
   const { user } = useUser();
   //const [firstName, setFirstName] = useState(user?.firstName);
   //const [lastName, setLastName] = useState(user?.lastName);
-  const [book, setBook] = useState([]);
-
+  const [myAds, setMyAds] = useState([]);
+  const [favProduct, setFavProduct] = useState([]);
+  const BASE_URL = "http://192.168.1.112:8000"
   const fetchData = () => {
-    axios.get(`http://192.168.1.11:8000/products/user_id=${user.id}`)
+    axios.get(`${BASE_URL}/products/user_id=${user.id}`)
       .then((response) => {
-        setBook(response.data.children);
+        setMyAds(response.data.children);
       })
       .catch((error) => {
         console.error('Veri çekme hatası:', error);
       });
   };
 
+  const fetchDataFav = () => {
+    axios.get(`${BASE_URL}/favByUser/${user.id}`)
+    .then((response) => {
+      setFavProduct(response.data.children);
+    })
+    .catch((error) => {
+      console.error('Veri çekme hatası:', error);
+    });
+  }
+
   useEffect(() => {
-    fetchData(); 
+    fetchData();
+    fetchDataFav(); 
   }, []);
 
 
@@ -60,7 +72,7 @@ const Profile = () => {
           
             <Text style={{fontSize:30,color:'white',  padding:0, }}>{user.firstName} {user.lastName}</Text>
             <Text style={{padding:0,color:'white', }}>{user.primaryEmailAddress.emailAddress}</Text>
-            <Text style={{padding:0,color:'white', }}>5356489465</Text>
+            <Text style={{padding:0,color:'white', }}>{user.phoneNumbers[0].phoneNumber.slice(2)}</Text>
           
           
         </View>        
@@ -77,7 +89,50 @@ const Profile = () => {
             </View>
               
                 <ScrollView horizontal style= {{height:175,backgroundColor:'white'}}>
-                {book.map(item => {
+                {myAds.map(item => {
+                const title = item.title || 'Başlık Yok';
+                const author = item.author || 'Yazar Bilgisi Yok';
+                const price = item.price || 'Fiyat Bilgisi Yok';
+                const description = item.description || 'Açıklama yok';
+                const thumbnail = item.image_url
+                const product_id = item.product_id;
+                return (
+                <View key={item.id}   >
+                  <Link href={{
+                      pathname: "../screens/ads/urunDetay",
+                      params: { product_id : product_id }
+                    }} asChild>
+                    
+                    <TouchableOpacity style={{marginLeft:5, width:120,borderRadius:25, borderWidth:0.5}}>
+                    
+                    <Image source={{ uri: thumbnail}} style={styles.image} />
+                    <Text style={styles.textTitleStyle}>{kisaText(title,8)}</Text>
+                    
+                    <Text style={styles.textPriceStlye}>{price} TL</Text>
+                    
+                  </TouchableOpacity>
+            
+            
+                  </Link>
+                  
+                </View>
+              )
+
+            })}
+                </ScrollView>
+
+        </View>
+
+        <View style={{marginTop:20, marginLeft:20}}>
+            <View style={{flexDirection:'row',justifyContent:'space-between',width:'95%'}}>
+              <Text style ={{fontSize:25,textAlign:'right'}}> Istek Listem</Text>
+              <Link href={"/screens/ads/myAds"}>
+                <Text style ={{textAlign:'left',fontSize:15, textDecorationLine:'underline line'}}>Tümünü Gör</Text>
+              </Link>
+            </View>
+              
+                <ScrollView horizontal style= {{height:175,backgroundColor:'white'}}>
+                {favProduct.map(item => {
                 const title = item.title || 'Başlık Yok';
                 const author = item.author || 'Yazar Bilgisi Yok';
                 const price = item.price || 'Fiyat Bilgisi Yok';

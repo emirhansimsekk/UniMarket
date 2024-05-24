@@ -8,7 +8,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { fonts } from '../../../assets/theme';
 
 const MAX_TEXT_LENGTH = 15; 
-
+const BASE_URL = "http://192.168.1.112:8000"
 const kisaText = (text,length) => {
   if (text.length > length) {
     return text.substring(0, length - 3) + '...';
@@ -24,7 +24,7 @@ const randomColor =() =>{
 const sporIlanlari = () => {
     const [book, setBook] = useState([]);
     const fetchData = () => {
-        axios.get('http://192.168.1.11:8000/sports')
+        axios.get(`${BASE_URL}/sports`)
           .then((response) => {
             setBook(response.data.children);
             console.log(response.data.children)
@@ -46,12 +46,15 @@ const sporIlanlari = () => {
         const description = item.description || 'Açıklama yok';
         const thumbnail = "http://books.google.com/books/content?id=bnu5EAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
         const product_id = item.product_id;
+        const cat_id = item.category_id;
         return (
           <View key={item.id} style={styles.container}>
             
             <Link href={{
                 pathname: "./urunDetay",
-                params: { product_id : product_id }
+                params: { product_id : product_id,
+                  cat_id: cat_id  
+         }
               }} asChild>
               <TouchableOpacity style={{marginLeft:10}}>
               <View style={{...styles.cardViewStyle,backgroundColor:randomColor()}}>

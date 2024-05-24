@@ -13,7 +13,7 @@ import {  uploadToFirebase } from '../../../firebase-config';
 const addBook = () => {
 
 const { user } = useUser();
-
+const BASE_URL = "http://192.168.1.112:8000"
 const [status, setStatus] = useState(null);
 const [isFocusTypeStatus, setIsFocusTypeStatus] = useState(false);
 
@@ -23,6 +23,8 @@ const [txt_yazarAdi,setYazarAdi] = useState('');
 const [txt_aciklama,setAciklama] = useState('');
 const [txt_fiyat,setFiyat] = useState('');
 const [image_url,setImageUrl] = useState('')
+
+const [isButtonEnable, setButtonEnable] = useState(false)
 
 const durum = [
   { label: 'Yıpranmış', value: 'Yıpranmış' },
@@ -47,7 +49,7 @@ const durum = [
     }
     else{
      setLoading(true)
-     await axios.post('http://192.168.1.11:8000/products',book)
+     await axios.post(`${BASE_URL}/products`,book)
     .then((response) => {
       console.log(response);
     }).finally(() => {
@@ -60,7 +62,6 @@ const durum = [
     let result = await ImagePicker.launchCameraAsync({
       ediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [16, 9],
       quality: 0.5,
     })
     const image = result.assets[0]
@@ -73,6 +74,7 @@ const durum = [
       console.log('filename'+fileName)
       console.log('url '+uploadImage.downloadUrl)
       setImageUrl(uploadImage.downloadUrl)
+      setButtonEnable(true)
     }
     catch(e) {
       console.log(e)
@@ -91,7 +93,7 @@ const durum = [
             else{
               console.log('chatgpt')
             setLoading(true)
-            await axios.get('http://192.168.1.114:5000/endpoint/'+txt_baslik+'.'+status)
+            await axios.get('http://192.168.1.112:5000/endpoint/'+txt_baslik+'.'+status)
             .then((response) => {
               const data = JSON.parse(response.data.data); // İlan açıklamasını çıkarmak için JSON.parse kullanabilirsiniz
               const aciklama = data.ilan_aciklamasi;
@@ -180,7 +182,7 @@ const durum = [
         />
     <View style={styles.button}>
       <Button
-        
+        disabled={!isButtonEnable}
         title='Ekle' onPress={ekle}
       /> 
        <Button
@@ -197,7 +199,7 @@ const durum = [
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <ActivityIndicator size="large" color="#0000ff" />
-            <Text>Dusunuyor...</Text>
+            <Text style={{color:"white"}}>Dusunuyor...</Text>
           </View>
         </View>
       </Modal>

@@ -10,10 +10,10 @@ import Category from '../../components/Category';
 
 
 const IlanVer = () => {
-
+  const BASE_URL = "http://192.168.1.112:8000"
   const [category, setCategory] = useState([]);
     const fetchData = () => {
-        axios.get('http://192.168.1.11:8000/categories')
+        axios.get(`${BASE_URL}/categories`)
           .then((response) => {
             setCategory(response.data.children);
             console.log(response.data.children)

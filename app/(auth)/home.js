@@ -1,17 +1,23 @@
-import { View, Text, StyleSheet, ScrollView,TouchableOpacity, Image } from 'react-native';
-import React, {useState, useEffect} from 'react';
+import { View, Text, StyleSheet, ScrollView,TouchableOpacity, Image, Pressable } from 'react-native';
+import React, {useState, useEffect, useRef, createRef} from 'react';
 import { useUser } from '@clerk/clerk-expo';
 import { useFonts } from 'expo-font';
 import { Link,router } from 'expo-router';
 import axios from 'axios'
+import { EvilIcons } from '@expo/vector-icons';
 import { fonts } from '../../assets/theme';
+import { SearchBar } from '@rneui/themed';
+
 
 const Home = () => {
   const { user } = useUser();
-  const [book, setBook] = useState([]);
 
+  const [book, setBook] = useState([]);
+  const [search1, setSearch1] = useState("");
+  
+  const BASE_URL = "http://192.168.1.112:8000"
   const fetchData = () => {
-    axios.get('http://192.168.1.11:8000/products:sort=product_id:desc')
+    axios.get(`${BASE_URL}/products:sort=product_id:desc`)
       .then((response) => {
         setBook(response.data.children);
       })
@@ -19,14 +25,22 @@ const Home = () => {
         console.error('Veri çekme hatası:', error);
       });
   };
-
+  console.log("searchText---",search1)
   useEffect(() => {
     fetchData(); 
   }, []);
+
+
+  const updateSearch = (search) => {
+    
+    setSearch1(search);
+    console.log("typeofsearchText---",typeof search1)
+
+  };
   
   const [category, setCategory] = useState([]);
   const fetchDataCategory = () => {
-        axios.get('http://192.168.1.11:8000/categories')
+        axios.get(`${BASE_URL}/categories`)
           .then((response) => {
             setCategory(response.data.children);
             console.log(response.data.children)
@@ -63,17 +77,47 @@ const Home = () => {
     }
     
   }
-
-  
+  const isDisabled = search1 === '';
+  console.log(isDisabled)
   return (
-    <View >
-      <View style={styles.searchBar}>
-        <Text style={{padding:15}}>Search..</Text>
-      </View>
+    
+    <View > 
+      <View style={{flexDirection: 'row'}}>
+          
+        <Pressable 
+          disabled={true}
+          onPress={()=>{console.log('press')}}
+          style={{marginTop:18}}
+        >
+          {isDisabled ? (
+            <EvilIcons name="search" size={44} color="grey" />
+          ) : (
+            <Link 
+              href={{
+                pathname: "../screens/ads/searchAds",
+                params: { search : search1 }
+              }} 
+            >
+              <EvilIcons name="search" size={44} color="black" />
+            </Link>
+          )}
+        </Pressable>
+        <SearchBar
+            placeholder="Ara..."
+            onChangeText={updateSearch}
+            value={search1}
+            platform='ios'
+            searchIcon={null}
+            lightTheme={true}
+            containerStyle={{backgroundColor: "#F2F2F2", width: '90%',alignSelf: 'flex-end'}}
+            cancelButtonTitle='Vazgec'
+          />
+      </View>       
+       
 
       <View>
         <View style={styles.containerButtons}>
-          <ScrollView horizontal style={{marginTop:20}}>
+        <ScrollView horizontal style={{marginTop:20}}>
           {category.map(item => {
             category_id = item.category_id;
             return(
@@ -100,11 +144,14 @@ const Home = () => {
           const description = item.description || 'Açıklama yok';
           const image = item.image_url
           const product_id = item.product_id;
+          const cat_id = item.category_id;
           return (
           <View key={item.id}   >
             <Link href={{
                 pathname: "../screens/ads/urunDetay",
-                params: { product_id : product_id }
+                params: { product_id : product_id,
+                  cat_id: cat_id  
+         }
               }} asChild>
               
               <TouchableOpacity style={{marginLeft:5, width:120, borderRightWidth:0.5}}>
@@ -145,7 +192,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor:'#D9D9D9',
     marginLeft:20,
-    marginTop: 110,
+    marginTop: 40,
     height: 140,
     width: 375,
     position:'absolute',
@@ -162,12 +209,10 @@ const styles = StyleSheet.create({
     elevation: 20
   },
   searchBar: {
-    width:370,
+    width:'370',
     height: 50,
-    backgroundColor:'#B5B5B5',
     position: 'absolute',
     marginLeft:20,
-    borderRadius: 25,
     marginTop:20,
     
   },

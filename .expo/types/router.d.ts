@@ -7,7 +7,7 @@ declare module "expo-router" {
   export * from 'expo-router/build';
 
   // prettier-ignore
-  type StaticRoutes = `/` | `/(auth)/home` | `/home` | `/(auth)/ilanVer` | `/ilanVer` | `/(auth)/profile` | `/profile` | `/(auth)/_layout` | `/_layout` | `/public/login` | `/public/register` | `/public/reset` | `/public/_layout` | `/screens/addProduct/addBook` | `/screens/addProduct/addCloth` | `/screens/addProduct/addEarphone` | `/screens/addProduct/addKeyboard` | `/screens/addProduct/addLaptop` | `/screens/addProduct/addPhone` | `/screens/addProduct/addSportEquipment` | `/screens/addProduct/addTechnology` | `/screens/addProduct/_layout` | `/screens/ads/giyimIlanlari` | `/screens/ads/kitapIlanlari` | `/screens/ads/myAds` | `/screens/ads/sporIlanlari` | `/screens/ads/teknolojiIlanlari` | `/screens/ads/urunDetay` | `/screens/ads/_layout`;
+  type StaticRoutes = `/` | `/(auth)/home` | `/home` | `/(auth)/ilanVer` | `/ilanVer` | `/(auth)/profile` | `/profile` | `/(auth)/_layout` | `/_layout` | `/public/login` | `/public/register` | `/public/reset` | `/public/_layout` | `/screens/addProduct/addBook` | `/screens/addProduct/addCloth` | `/screens/addProduct/addEarphone` | `/screens/addProduct/addKeyboard` | `/screens/addProduct/addLaptop` | `/screens/addProduct/addPhone` | `/screens/addProduct/addSportEquipment` | `/screens/addProduct/addTechnology` | `/screens/addProduct/_layout` | `/screens/ads/giyimIlanlari` | `/screens/ads/kitapIlanlari` | `/screens/ads/myAds` | `/screens/ads/searchAds` | `/screens/ads/sporIlanlari` | `/screens/ads/teknolojiIlanlari` | `/screens/ads/urunDetay` | `/screens/ads/_layout`;
   // prettier-ignore
   type DynamicRoutes<T extends string> = never;
   // prettier-ignore

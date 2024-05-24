@@ -21,6 +21,8 @@ const addPhone = () => {
     const [status, setStatus] = useState(null);
     const [isFocusTypeStatus, setIsFocusTypeStatus] = useState(false);
     const [isFocusTypeBrand, setIsFocusTypeBrand] = useState(false);
+    const [isButtonEnable, setButtonEnable] = useState(false)
+    const BASE_URL = "http://192.168.1.112:8000"
     const urun_marka = [
         { label: 'Apple', value: 'Apple' },
         { label: 'Huawei', value: 'Huawei' },
@@ -52,7 +54,7 @@ const addPhone = () => {
         }
         else{
         console.log(image_url)
-        axios.post('http://192.168.1.11:8000/products',phone)
+        axios.post(`${BASE_URL}/products`,phone)
         .then((response) => {
           console.log(response);
     
@@ -64,7 +66,6 @@ const addPhone = () => {
         let result = await ImagePicker.launchCameraAsync({
           ediaTypes: ImagePicker.MediaTypeOptions.Images,
           allowsEditing: true,
-          aspect: [4, 3],
           quality: 0.5,
         })
         const image = result.assets[0]
@@ -77,6 +78,7 @@ const addPhone = () => {
           console.log('filename'+fileName)
           console.log('url '+uploadImage.downloadUrl)
           setImageUrl(uploadImage.downloadUrl)
+          setButtonEnable(true)
         }
         catch(e) {
           ToastAndroid.show('Resim yuklenemedi !', ToastAndroid.LONG);
@@ -202,7 +204,7 @@ const addPhone = () => {
         />
     <View style={styles.button}>
       <Button
-        
+        disabled={isButtonEnable}
         title='Ekle' onPress={ekle}
       /> 
        <Button

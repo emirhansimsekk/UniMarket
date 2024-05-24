@@ -21,7 +21,8 @@ const laptopEkle = () => {
     const [status, setStatus] = useState(null);
     const [isFocusTypeStatus, setIsFocusTypeStatus] = useState(false);
     const [image_url,setImageUrl] = useState('')
-    
+    const [isButtonEnable, setButtonEnable] = useState(false)
+    const BASE_URL = "http://192.168.1.112:8000"
     const urun_marka = [
         { label: 'Asus', value: 'Asus' },
         { label: 'Apple', value: 'Apple' },
@@ -53,7 +54,7 @@ const laptopEkle = () => {
         }
         else{
         console.log(image_url)
-        axios.post('http://192.168.1.11:8000/products',laptop)
+        axios.post(`${BASE_URL}/products`,laptop)
         .then((response) => {
           console.log(response);
     
@@ -65,7 +66,6 @@ const laptopEkle = () => {
         let result = await ImagePicker.launchCameraAsync({
           ediaTypes: ImagePicker.MediaTypeOptions.Images,
           allowsEditing: true,
-          aspect: [4, 3],
           quality: 0.5,
         })
         const image = result.assets[0]
@@ -78,6 +78,7 @@ const laptopEkle = () => {
           console.log('filename'+fileName)
           console.log('url '+uploadImage.downloadUrl)
           setImageUrl(uploadImage.downloadUrl)
+          setButtonEnable(true)
         }
         catch(e) {
           ToastAndroid.show('Resim yuklenemedi !', ToastAndroid.LONG);
@@ -94,7 +95,7 @@ const laptopEkle = () => {
                 else{
                   console.log('chatgpt')
                   setLoading(true)
-                axios.get('http://192.168.1.114:5000/endpoint/'+txt_baslik+'.'+status)
+                axios.get('http://192.168.1.112:5000/endpoint/'+txt_baslik+'.'+status)
                 .then((response) => {
                   const data = JSON.parse(response.data.data); // İlan açıklamasını çıkarmak için JSON.parse kullanabilirsiniz
                   const aciklama = data.ilan_aciklamasi;
@@ -203,7 +204,7 @@ const laptopEkle = () => {
         />
     <View style={styles.button}>
       <Button
-        
+        disabled={!isButtonEnable}
         title='Ekle' onPress={ekle}
       /> 
        <Button

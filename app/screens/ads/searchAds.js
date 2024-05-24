@@ -3,12 +3,12 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { FlatList } from 'react-native-gesture-handler';
 import { useFonts } from 'expo-font';
-import { Link } from 'expo-router';
+import { Link, useLocalSearchParams, useGlobalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { fonts } from '../../../assets/theme';
 import { LinearGradient } from 'expo-linear-gradient';
 
 const MAX_TEXT_LENGTH = 15; 
+
 const BASE_URL = "http://192.168.1.112:8000"
 const kisaText = (text,length) => {
   if (text.length > length) {
@@ -23,12 +23,20 @@ const randomColor =() =>{
   return `#${color}`;
 }
 
-const kitapIlanlari = () => {
-    const [book, setBook] = useState([]);
+const searchAds = () => {
+    const { search }  = useLocalSearchParams();
+    const searchStr = search ? search.toString() : search;
+    console.log("searchStr---6565",search)
+    console.log("search1----654165",typeof searchStr);
+    // const router = useRouter()
+    // const { search } = 
+   
+    
+    const [products, setProduct] = useState([]);
     const fetchData = () => {
-        axios.get(`${BASE_URL}/books`)
+        axios.get(`${BASE_URL}/products/search=${searchStr}`)
           .then((response) => {
-            setBook(response.data.children);
+            setProduct(response.data.children);
             console.log(response.data.children)
           })
           .catch((error) => {
@@ -41,60 +49,49 @@ const kitapIlanlari = () => {
       }, []);
       
   return (
-    <View>
-     
-      <ScrollView  horizontal= {false} style={{marginTop:0}}>
-     
-      {book.map(item => {
+<View>
+  <ScrollView horizontal={false} style={{marginTop:0}}>
+    {products.length === 0 ? (
+      <Text style={{textAlign: 'center', marginTop: 20, fontSize:30}}>Ürün bulunamadı</Text>
+    ) : (
+      products.map(item => {
         const title = item.title || 'Başlık Yok';
         const author = item.author || 'Yazar Bilgisi Yok';
         const price = item.price || 'Fiyat Bilgisi Yok';
         const description = item.description || 'Açıklama yok';
-        const thumbnail = item.image_url
+        const thumbnail = item.image_url;
         const product_id = item.product_id;
         const cat_id = item.category_id;
         return (
-          <View key={item.id} style={{...styles.container,flexDirection:'column'}}>
-            
+          <View key={item.id} style={{...styles.container, flexDirection: 'column'}}>
             <Link href={{
-                pathname: "./urunDetay",
-                params: { product_id : product_id,
-                  cat_id: cat_id  
-         }
-              }} asChild>
-
-            <TouchableOpacity style={{marginLeft:10}}>
-                                                       
+              pathname: "./urunDetay",
+              params: { product_id : product_id,
+                        cat_id: cat_id  
+               }
+            }} asChild>
+              <TouchableOpacity style={{marginLeft: 10}}>
                 <LinearGradient colors={['#4F80FF', '#3FC8FF']} style={styles.cardViewStyle}>
-                  <View style={{marginLeft:100}}>
+                  <View style={{marginLeft: 100}}>
                     <Text style={styles.textStylePrice}>₺{price}</Text>
-                    <Text style={styles.textStyleBookName}>{kisaText(title,20)}</Text> 
-                    <Text style={styles.textStyleDescription}>{kisaText(description,55)}</Text>
-                    <TouchableOpacity style={{alignSelf:'flex-end', padding:10}} onPress={() => deleteProduct(product_id)}>
-                      
-                    </TouchableOpacity >
+                    <Text style={styles.textStyleBookName}>{kisaText(title, 20)}</Text> 
+                    <Text style={styles.textStyleDescription}>{kisaText(description, 55)}</Text>
+                    <TouchableOpacity style={{alignSelf: 'flex-end', padding: 10}} onPress={() => deleteProduct(product_id)}>
+                      {/* Delete button içerik buraya eklenebilir */}
+                    </TouchableOpacity>
                   </View>
-                 
-                 </LinearGradient>
-
-
-              <View style={{position:'absolute'}}>
-                
-                  <Image source={{ uri: thumbnail}} style={styles.iconStyle} />
-                
-              </View>  
-              
+                </LinearGradient>
+                <View style={{position: 'absolute'}}>
+                  <Image source={{ uri: thumbnail }} style={styles.iconStyle} />
+                </View>  
               </TouchableOpacity>
-              
             </Link>
-               
           </View>
-        )
-
-      })}
-        
-    </ScrollView>
-    </View>
+        );
+      })
+    )}
+  </ScrollView>
+</View>
     
   )
 }
@@ -179,4 +176,4 @@ const styles = StyleSheet.create({
 
 
 })
-export default kitapIlanlari
+export default searchAds

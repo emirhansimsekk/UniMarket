@@ -7,7 +7,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 
 const MAX_TEXT_LENGTH = 15; 
-
+const BASE_URL = "http://192.168.1.112:8000"
 const kisaText = (text,length) => {
   if (text.length > length) {
     return text.substring(0, length - 3) + '...';
@@ -25,7 +25,7 @@ const myAds = () => {
     const {user} = useUser();
     const [book, setBook] = useState([]);
     const fetchData = () => {
-        axios.get(`http://192.168.1.11:8000/products/user_id=${user.id}`)
+        axios.get(`${BASE_URL}/products/user_id=${user.id}`)
           .then((response) => {
             setBook(response.data.children);
             console.log(response.data.children)
@@ -70,12 +70,15 @@ const myAds = () => {
         const description = item.description || 'Açıklama yok';
         const thumbnail = item.image_url
         const product_id = item.product_id;
+        const cat_id = item.category_id;
         return (
           <View key={item.id} style={{...styles.container,flexDirection:'column'}}>
             
             <Link href={{
                 pathname: "./urunDetay",
-                params: { product_id : product_id }
+                params: { product_id : product_id,
+                  cat_id: cat_id  
+         }
               }} asChild>
 
             <TouchableOpacity style={{marginLeft:10}}>
